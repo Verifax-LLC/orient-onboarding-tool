@@ -19,7 +19,7 @@ const VButton: React.FC<VButtonProps> = (props: VButtonProps) => {
 
   const classStr = classNames(
     props.classNames,
-    "btn xs:btn-lg lg:btn-md btn-primary rounded-full"
+    "btn xs:btn-lg lg:btn-md btn-primary"
   );
 
   return (
@@ -28,6 +28,7 @@ const VButton: React.FC<VButtonProps> = (props: VButtonProps) => {
       className={classStr}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleClick(e)}
       disabled={props.disabled}
+      style={{ color: "white" }}
     >
       {props.text}
     </button>

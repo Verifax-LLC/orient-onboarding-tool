@@ -40,9 +40,9 @@ const UploadDocument: React.FC = () => {
         handleUpload(e).catch((err) => console.error(err));
       }}
     >
-      <label htmlFor="uploadVerificationDocument">Upload a document</label>
+      <label htmlFor="uploadOnboardingDocument">Upload a document</label>
       <input
-        name="uploadVerificationDocument"
+        name="uploadOnboardingDocument"
         type="file"
         className="mx-auto file-input file-input-bordered file-input-primary w-full max-w-xs"
         onChange={handleFileChange}

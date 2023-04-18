@@ -1,13 +1,10 @@
-import { useState } from "react";
 import "./App.css";
-import VerificaitionWorkflowView from "./features/verification-workflow/views/VerificationView";
+import OnboardingView from "./pages/Onboarding";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div data-theme="verifax" className="h-screen flex justify-center">
-      <VerificaitionWorkflowView />
+      <OnboardingView />
     </div>
   );
 }
