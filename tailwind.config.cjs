@@ -35,7 +35,7 @@ module.exports = {
       {
         verifax: {
           primary: "#7F56D9",
-          secondary: "#C1C8E4",
+          secondary: "#667085",
           accent: "#C9A2FF",
           neutral: "#71E1E1",
           exotic: "#F59F01",

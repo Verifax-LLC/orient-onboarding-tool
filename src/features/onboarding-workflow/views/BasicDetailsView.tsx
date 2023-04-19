@@ -4,14 +4,21 @@ import VGridContainer from "../../../ui/grid-container/VGridContainer";
 import { VInput } from "../../../ui/input/VInput";
 import OnboardingFooter from "../components/OnboardingFooter";
 
-interface FormData {
+interface BasicDetailsViewProps {
+  onClick?: (values: BasicDetailsFormData) => void;
+}
+
+export interface BasicDetailsFormData {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   organization: string;
   organizationWebsite: string;
   location: string;
 }
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
@@ -19,6 +26,9 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
+  phoneNumber: Yup.string()
+    .matches(phoneRegExp, "Please enter a valid phone number")
+    .required("Phone number is required"),
   organization: Yup.string().required("Organization is required"),
   organizationWebsite: Yup.string()
     .matches(
@@ -29,20 +39,27 @@ const validationSchema = Yup.object().shape({
   location: Yup.string().required("Location is required"),
 });
 
-const initialValues: FormData = {
+const initialValues: BasicDetailsFormData = {
   firstName: "",
   lastName: "",
   email: "",
+  phoneNumber: "",
   organization: "",
   organizationWebsite: "",
   location: "",
 };
 
-const BasicDetailsView = () => {
-  const handleSubmit = (values: FormData, actions: FormikHelpers<FormData>) => {
+const BasicDetailsView: React.FC<BasicDetailsViewProps> = (
+  props: BasicDetailsViewProps
+) => {
+  const handleSubmit = (
+    values: BasicDetailsFormData,
+    actions: FormikHelpers<BasicDetailsFormData>
+  ) => {
     const fullWebsite = `https://${values.organizationWebsite}`;
     const sanitizedValues = { ...values, organizationWebsite: fullWebsite };
     console.log(sanitizedValues);
+    props.onClick?.(sanitizedValues);
     // If the submission is successful, reset the form
     actions.resetForm();
   };
@@ -62,6 +79,7 @@ const BasicDetailsView = () => {
               required
               type="text"
               name="firstName"
+              placeholder="Tim"
               value={values.firstName}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -74,6 +92,7 @@ const BasicDetailsView = () => {
             <VInput
               label="Last name (point of contact)"
               required
+              placeholder="Apple"
               type="text"
               value={values.lastName}
               name="lastName"
@@ -89,6 +108,7 @@ const BasicDetailsView = () => {
               label="Email (point of contact)"
               required
               value={values.email}
+              placeholder="timapple@gmail.com"
               type="email"
               name="email"
               onChange={handleChange}
@@ -96,8 +116,24 @@ const BasicDetailsView = () => {
               error={errors.email && touched.email ? errors.email : undefined}
             />
             <VInput
+              label="Phone number (point of contact)"
+              required
+              value={values.phoneNumber}
+              placeholder="xxx-xxx-xxxx"
+              type="tel"
+              name="phoneNumber"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={
+                errors.phoneNumber && touched.phoneNumber
+                  ? errors.phoneNumber
+                  : undefined
+              }
+            />
+            <VInput
               label="Organization"
               required
+              placeholder="Apple Inc."
               value={values.organization}
               type="text"
               name="organization"
@@ -112,6 +148,7 @@ const BasicDetailsView = () => {
             <VInput
               label="Organization Website"
               required
+              placeholder="apple.com"
               value={values.organizationWebsite}
               type="text"
               name="organizationWebsite"
@@ -127,6 +164,7 @@ const BasicDetailsView = () => {
             <VInput
               label="Location"
               required
+              placeholder="Cupertino, CA"
               value={values.location}
               type="text"
               name="location"
@@ -138,7 +176,7 @@ const BasicDetailsView = () => {
                   : undefined
               }
             />
-            <OnboardingFooter text={"Continue"} />
+            <OnboardingFooter type="submit" text={"Continue"} />
           </Form>
         )}
       </Formik>
