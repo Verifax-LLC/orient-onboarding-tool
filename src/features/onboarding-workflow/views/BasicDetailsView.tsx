@@ -9,6 +9,8 @@ interface FormData {
   lastName: string;
   email: string;
   organization: string;
+  organizationWebsite: string;
+  location: string;
 }
 
 const validationSchema = Yup.object().shape({
@@ -18,6 +20,13 @@ const validationSchema = Yup.object().shape({
     .email("Invalid email address")
     .required("Email is required"),
   organization: Yup.string().required("Organization is required"),
+  organizationWebsite: Yup.string()
+    .matches(
+      /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+      "Please enter a valid website"
+    )
+    .required("Website is required"),
+  location: Yup.string().required("Location is required"),
 });
 
 const initialValues: FormData = {
@@ -25,13 +34,15 @@ const initialValues: FormData = {
   lastName: "",
   email: "",
   organization: "",
+  organizationWebsite: "",
+  location: "",
 };
 
 const BasicDetailsView = () => {
   const handleSubmit = (values: FormData, actions: FormikHelpers<FormData>) => {
-    // Do something with the form values, like sending it to a server or displaying them
-    console.log(values);
-
+    const fullWebsite = `https://${values.organizationWebsite}`;
+    const sanitizedValues = { ...values, organizationWebsite: fullWebsite };
+    console.log(sanitizedValues);
     // If the submission is successful, reset the form
     actions.resetForm();
   };
@@ -44,7 +55,7 @@ const BasicDetailsView = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, handleChange, handleBlur }) => (
+        {({ values, errors, touched, handleChange, handleBlur, dirty }) => (
           <Form className="space-y-4 max-w-sm mx-auto">
             <VInput
               label="First name (point of contact)"
@@ -95,6 +106,35 @@ const BasicDetailsView = () => {
               error={
                 errors.organization && touched.organization
                   ? errors.organization
+                  : undefined
+              }
+            />
+            <VInput
+              label="Organization Website"
+              required
+              value={values.organizationWebsite}
+              type="text"
+              name="organizationWebsite"
+              adornment="https://"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={
+                errors.organizationWebsite && touched.organizationWebsite
+                  ? errors.organizationWebsite
+                  : undefined
+              }
+            />
+            <VInput
+              label="Location"
+              required
+              value={values.location}
+              type="text"
+              name="location"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={
+                errors.location && touched.location
+                  ? errors.location
                   : undefined
               }
             />

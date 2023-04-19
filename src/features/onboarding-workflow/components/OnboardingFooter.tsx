@@ -5,6 +5,7 @@ interface OnboardingFooterProps {
   text: string;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const OnboardingFooter: React.FC<OnboardingFooterProps> = (
@@ -17,6 +18,7 @@ const OnboardingFooter: React.FC<OnboardingFooterProps> = (
         type={props.type ?? "button"}
         text="Continue  &#8680;"
         onClick={() => props.onClick?.()}
+        disabled={props.disabled}
         classNames={["w-[343px] m-auto"]}
       />
     </div>
