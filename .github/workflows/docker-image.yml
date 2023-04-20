@@ -18,20 +18,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Determine next version
-        id: version
-        run: echo ::set-output name=tag::$(git describe --tags --match "v[0-9]*" --abbrev=0)
-
       - name: Build Docker image
         run: |
-          docker build -t client-onboarding-tool:${{ steps.version.outputs.tag }} .
-          docker tag client-onboarding-tool:${{ steps.version.outputs.tag }} ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:${{ steps.version.outputs.tag }}
+          docker build -t client-onboarding-tool:latest .
+          docker tag client-onboarding-tool:latest ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:latest
 
       - name: Push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:${{ steps.version.outputs.tag }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:latest
