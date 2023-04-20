@@ -42,8 +42,8 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
     values: SocialMediaDetailsFormData,
     actions: FormikHelpers<SocialMediaDetailsFormData>
   ) => {
-    console.log(values);
     // If the submission is successful, reset the form
+    props.onClick?.(values);
     actions.resetForm();
   };
 
@@ -141,7 +141,7 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
                   : undefined
               }
             />
-            <OnboardingFooter text={"Continue"} />
+            <OnboardingFooter type="submit" text={"Continue"} />
           </Form>
         )}
       </Formik>

@@ -1,4 +1,11 @@
-import { useState } from "react";
+import { ClientDetailsStatus } from "../common/client-details/client-details.enums";
+import {
+  setBasicDetails,
+  setClientDetailsStatus,
+  setSocialMediaDetails,
+} from "../common/client-details/client-details.thunks";
+import { useAppDispatch, useAppSelector } from "../common/store/hooks";
+import { RootState } from "../common/store/store";
 import BasicDetailsView, {
   BasicDetailsFormData,
 } from "../features/onboarding-workflow/views/BasicDetailsView";
@@ -7,26 +14,29 @@ import SocialMediaView, {
   SocialMediaDetailsFormData,
 } from "../features/onboarding-workflow/views/SocialMediaView";
 
-const OnboardingView = () => {
-  const [passedPreparation, setPassedPreparation] = useState(false);
-  const [passedBasicDetails, setPassedBasicDetails] = useState(false);
-  const [passedSocialMedia, setPassedSocialMedia] = useState(false);
+const OnboardingView: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const formStatus = useAppSelector((s: RootState) => s.clientDetails.status);
 
   const handlePassedBasicDetails = (values: BasicDetailsFormData) => {
-    console.log(values);
-    setPassedBasicDetails(true);
+    dispatch(setBasicDetails(values));
   };
 
   const handlePassedSocialMedia = (values: SocialMediaDetailsFormData) => {
-    console.log(values);
-    setPassedSocialMedia(true);
+    dispatch(setSocialMediaDetails(values));
   };
 
-  if (!passedPreparation) {
-    return <PreparationView onClick={() => setPassedPreparation(true)} />;
+  if (formStatus === ClientDetailsStatus.Preparation) {
+    return (
+      <PreparationView
+        onClick={() =>
+          dispatch(setClientDetailsStatus(ClientDetailsStatus.BasicDetails))
+        }
+      />
+    );
   }
 
-  if (!passedBasicDetails) {
+  if (formStatus === ClientDetailsStatus.BasicDetails) {
     return (
       <BasicDetailsView
         onClick={(values: BasicDetailsFormData) =>
@@ -36,7 +46,7 @@ const OnboardingView = () => {
     );
   }
 
-  if (!passedSocialMedia) {
+  if (formStatus === ClientDetailsStatus.SocialMediaDetails) {
     return (
       <SocialMediaView
         onClick={(values: SocialMediaDetailsFormData) =>
@@ -45,6 +55,8 @@ const OnboardingView = () => {
       />
     );
   }
+
+  return <div>Onboarding complete</div>;
 };
 
 export default OnboardingView;
