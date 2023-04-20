@@ -1,5 +1,4 @@
 import React from "react";
-import OnboardingImage from "../../../assets/onboard.png";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
 import OnboardingFooter from "../components/OnboardingFooter";
 
@@ -17,7 +16,7 @@ const PreparationView: React.FC<PreparationViewProps> = (
         Company name would like to get you onboarded
       </p>
       <div className="mx-auto">
-        <img src={OnboardingImage} />
+        <img src={"/onboard.png"} />
       </div>
       <p className="text-sm font-bold">
         Make sure you meet the following criteria
