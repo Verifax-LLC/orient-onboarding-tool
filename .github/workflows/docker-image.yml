@@ -20,15 +20,12 @@ jobs:
 
       - name: Determine next version
         id: version
-        uses: einaregilsson/next-version@v1
-        with:
-          tag_prefix: "v"
-          default_bump: "patch"
+        run: echo ::set-output name=tag::$(git describe --tags --match "v[0-9]*" --abbrev=0)
 
       - name: Build Docker image
         run: |
-          docker build -t client-onboarding-tool:${{ steps.version.outputs.next_version }} .
-          docker tag client-onboarding-tool:${{ steps.version.outputs.next_version }} ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:${{ steps.version.outputs.next_version }}
+          docker build -t client-onboarding-tool:${{ steps.version.outputs.tag }} .
+          docker tag client-onboarding-tool:${{ steps.version.outputs.tag }} ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:${{ steps.version.outputs.tag }}
 
       - name: Push Docker image
         uses: docker/build-push-action@v2
@@ -36,5 +33,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:${{ steps.version.outputs.next_version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:${{ steps.version.outputs.tag }}
             ${{ secrets.DOCKERHUB_USERNAME }}/client-onboarding-tool:latest
