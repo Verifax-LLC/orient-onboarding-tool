@@ -18,12 +18,30 @@ export interface SocialMediaDetailsFormData {
 }
 
 const validationSchema = Yup.object().shape({
-  facebookUrl: Yup.string().url("Invalid Facebook URL"),
-  linkedinUrl: Yup.string().url("Invalid LinkedIn URL"),
-  instagramUrl: Yup.string().url("Invalid Instagram URL"),
-  twitterUrl: Yup.string().url("Invalid Twitter URL"),
-  pinterestUrl: Yup.string().url("Invalid Pinterest URL"),
-  tiktokUrl: Yup.string().url("Invalid TikTok URL"),
+  facebookUrl: Yup.string().matches(
+    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    "Please enter a valid website"
+  ),
+  linkedinUrl: Yup.string().matches(
+    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    "Please enter a valid website"
+  ),
+  instagramUrl: Yup.string().matches(
+    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    "Please enter a valid website"
+  ),
+  twitterUrl: Yup.string().matches(
+    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    "Please enter a valid website"
+  ),
+  pinterestUrl: Yup.string().matches(
+    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    "Please enter a valid website"
+  ),
+  tiktokUrl: Yup.string().matches(
+    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    "Please enter a valid website"
+  ),
 });
 
 const initialValues: SocialMediaDetailsFormData = {
@@ -42,8 +60,21 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
     values: SocialMediaDetailsFormData,
     actions: FormikHelpers<SocialMediaDetailsFormData>
   ) => {
-    // If the submission is successful, reset the form
-    props.onClick?.(values);
+    const updatedFormData = { ...values };
+
+    for (const key in updatedFormData) {
+      if (
+        updatedFormData.hasOwnProperty(key) &&
+        !updatedFormData[key as keyof SocialMediaDetailsFormData].startsWith(
+          "https://"
+        ) &&
+        updatedFormData[key as keyof SocialMediaDetailsFormData] !== ""
+      ) {
+        updatedFormData[key as keyof SocialMediaDetailsFormData] =
+          "https://" + updatedFormData[key as keyof SocialMediaDetailsFormData];
+      }
+    }
+    props.onClick?.(updatedFormData);
     actions.resetForm();
   };
 
@@ -55,13 +86,14 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, handleChange, handleBlur, dirty }) => (
+        {({ values, errors, touched, handleChange, handleBlur }) => (
           <Form className="space-y-4 max-w-sm mx-auto">
             <VInput
               label="Facebook URL"
-              placeholder="https://www.facebook.com/your-page"
-              type="url"
+              placeholder="www.facebook.com/your-page"
+              type="text"
               name="facebookUrl"
+              adornment="https://"
               value={values.facebookUrl}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -73,9 +105,10 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
             />
             <VInput
               label="LinkedIn URL"
-              placeholder="https://www.linkedin.com/in/your-profile"
-              type="url"
+              placeholder="www.linkedin.com/in/your-profile"
+              type="text"
               name="linkedinUrl"
+              adornment="https://"
               value={values.linkedinUrl}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -87,9 +120,10 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
             />
             <VInput
               label="Instagram URL"
-              placeholder="https://www.instagram.com/your-page"
-              type="url"
+              placeholder="www.instagram.com/your-page"
+              type="text"
               name="instagramUrl"
+              adornment="https://"
               value={values.instagramUrl}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -101,9 +135,10 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
             />
             <VInput
               label="Twitter URL"
-              placeholder="https://twitter.com/your-handle"
-              type="url"
+              placeholder="twitter.com/your-handle"
+              type="text"
               name="twitterUrl"
+              adornment="https://"
               value={values.twitterUrl}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -115,9 +150,10 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
             />
             <VInput
               label="Pinterest URL"
-              placeholder="https://www.pinterest.com/your-page"
-              type="url"
+              placeholder="www.pinterest.com/your-page"
+              type="text"
               name="pinterestUrl"
+              adornment="https://"
               value={values.pinterestUrl}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -129,9 +165,10 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
             />
             <VInput
               label="TikTok URL"
-              placeholder="https://www.tiktok.com/@your-handle"
-              type="url"
+              placeholder="www.tiktok.com/@your-handle"
+              type="text"
               name="tiktokUrl"
+              adornment="https://"
               value={values.tiktokUrl}
               onChange={handleChange}
               onBlur={handleBlur}

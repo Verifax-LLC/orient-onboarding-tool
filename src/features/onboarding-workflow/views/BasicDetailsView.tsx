@@ -56,9 +56,11 @@ const BasicDetailsView: React.FC<BasicDetailsViewProps> = (
     values: BasicDetailsFormData,
     actions: FormikHelpers<BasicDetailsFormData>
   ) => {
-    const fullWebsite = `https://${values.organizationWebsite}`;
+    const fullWebsite = !values.organizationWebsite.startsWith("https://")
+      ? `https://${values.organizationWebsite}`
+      : values.organizationWebsite;
     const sanitizedValues = { ...values, organizationWebsite: fullWebsite };
-    console.log(sanitizedValues);
+
     props.onClick?.(sanitizedValues);
     // If the submission is successful, reset the form
     actions.resetForm();
@@ -72,7 +74,7 @@ const BasicDetailsView: React.FC<BasicDetailsViewProps> = (
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, handleChange, handleBlur, dirty }) => (
+        {({ values, errors, touched, handleChange, handleBlur }) => (
           <Form className="space-y-4 max-w-sm mx-auto">
             <VInput
               label="First name (point of contact)"
