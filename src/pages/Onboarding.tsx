@@ -9,6 +9,7 @@ import { RootState } from "../common/store/store";
 import BasicDetailsView, {
   BasicDetailsFormData,
 } from "../features/onboarding-workflow/views/BasicDetailsView";
+import ContentSpecsView from "../features/onboarding-workflow/views/ContentSpecsView";
 import PreparationView from "../features/onboarding-workflow/views/PreparationView";
 import SocialMediaView, {
   SocialMediaDetailsFormData,
@@ -54,6 +55,10 @@ const OnboardingView: React.FC = () => {
         }
       />
     );
+  }
+
+  if (formStatus === ClientDetailsStatus.ContentSpecs) {
+    return <ContentSpecsView />;
   }
 
   return <div>Onboarding complete</div>;

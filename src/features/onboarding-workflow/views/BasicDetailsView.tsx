@@ -1,5 +1,9 @@
 import { Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
+import { ClientDetailsStatus } from "../../../common/client-details/client-details.enums";
+import { setClientDetailsStatus } from "../../../common/client-details/client-details.thunks";
+import { useAppDispatch, useAppSelector } from "../../../common/store/hooks";
+import { RootState } from "../../../common/store/store";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
 import { VInput } from "../../../ui/input/VInput";
 import OnboardingFooter from "../components/OnboardingFooter";
@@ -39,19 +43,29 @@ const validationSchema = Yup.object().shape({
   location: Yup.string().required("Location is required"),
 });
 
-const initialValues: BasicDetailsFormData = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  phoneNumber: "",
-  organization: "",
-  organizationWebsite: "",
-  location: "",
-};
-
 const BasicDetailsView: React.FC<BasicDetailsViewProps> = (
   props: BasicDetailsViewProps
 ) => {
+  const dispatch = useAppDispatch();
+  const basicDetails = useAppSelector(
+    (s: RootState) => s.clientDetails.basicDetails
+  );
+
+  const initialValues: BasicDetailsFormData = {
+    firstName: basicDetails?.formData.firstName ?? "",
+    lastName: basicDetails?.formData.lastName ?? "",
+    email: basicDetails?.formData.email ?? "",
+    phoneNumber: basicDetails?.formData.phoneNumber ?? "",
+    organization: basicDetails?.formData.organization ?? "",
+    organizationWebsite:
+      basicDetails?.formData.organizationWebsite.replace("https://", "") ?? "",
+    location: basicDetails?.formData.location ?? "",
+  };
+
+  const handleBackClick = () => {
+    dispatch(setClientDetailsStatus(ClientDetailsStatus.Preparation));
+  };
+
   const handleSubmit = (
     values: BasicDetailsFormData,
     actions: FormikHelpers<BasicDetailsFormData>
@@ -178,7 +192,11 @@ const BasicDetailsView: React.FC<BasicDetailsViewProps> = (
                   : undefined
               }
             />
-            <OnboardingFooter type="submit" text={"Continue"} />
+            <OnboardingFooter
+              type="submit"
+              text={"Continue"}
+              onBackClick={handleBackClick}
+            />
           </Form>
         )}
       </Formik>

@@ -54,7 +54,11 @@ const PreparationView: React.FC<PreparationViewProps> = (
           You have a valid payment method{" "}
         </p>
       </div>
-      <OnboardingFooter text="Let's go  &#8680;" onClick={props.onClick} />
+      <OnboardingFooter
+        text="Let's go  &#8680;"
+        onClick={props.onClick}
+        hideBackButton
+      />
     </VGridContainer>
   );
 };

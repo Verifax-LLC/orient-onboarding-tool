@@ -2,26 +2,29 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ClientDetailsStatus } from "./client-details.enums";
 import {
   BasicDetailsState,
-  ContentPreferencesState,
+  Client,
+  ContentSpecsState,
   PaymentDetailsState,
   SocialMediaDetailsState,
 } from "./client-details.models";
 
 // State
 interface ClientDetailsState {
+  currentClient?: Client;
   status: ClientDetailsStatus;
   basicDetails?: BasicDetailsState;
   socialMediaDetails?: SocialMediaDetailsState;
+  contentSpecs?: ContentSpecsState;
   paymentDetails?: PaymentDetailsState;
-  contentPreferences?: ContentPreferencesState;
 }
 
 const initialState: ClientDetailsState = {
+  currentClient: undefined,
   status: ClientDetailsStatus.Preparation,
   basicDetails: undefined,
   socialMediaDetails: undefined,
+  contentSpecs: undefined,
   paymentDetails: undefined,
-  contentPreferences: undefined,
 };
 
 // Reducers
@@ -29,6 +32,9 @@ export const clientDetailsSlice = createSlice({
   name: "client-details",
   initialState: initialState,
   reducers: {
+    setClient: (state: ClientDetailsState, action: PayloadAction<Client>) => {
+      state.currentClient = action.payload;
+    },
     setStatus: (
       state: ClientDetailsState,
       action: PayloadAction<ClientDetailsStatus>
@@ -47,17 +53,17 @@ export const clientDetailsSlice = createSlice({
     ) => {
       state.socialMediaDetails = action.payload;
     },
+    setContentSpecs: (
+      state: ClientDetailsState,
+      action: PayloadAction<ContentSpecsState>
+    ) => {
+      state.contentSpecs = action.payload;
+    },
     setPaymentDetails: (
       state: ClientDetailsState,
       action: PayloadAction<PaymentDetailsState>
     ) => {
       state.paymentDetails = action.payload;
-    },
-    setContentPreferences: (
-      state: ClientDetailsState,
-      action: PayloadAction<ContentPreferencesState>
-    ) => {
-      state.contentPreferences = action.payload;
     },
   },
 });

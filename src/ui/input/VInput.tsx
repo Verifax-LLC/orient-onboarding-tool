@@ -8,7 +8,7 @@ interface VInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   required?: boolean;
   placeholder?: string;
   name?: string;
-  value?: string;
+  value?: string | number;
   error?: string;
   adornment?: string;
 }

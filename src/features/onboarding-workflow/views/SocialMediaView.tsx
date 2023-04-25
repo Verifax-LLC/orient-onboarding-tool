@@ -1,5 +1,9 @@
 import { Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
+import { ClientDetailsStatus } from "../../../common/client-details/client-details.enums";
+import { setClientDetailsStatus } from "../../../common/client-details/client-details.thunks";
+import { useAppDispatch, useAppSelector } from "../../../common/store/hooks";
+import { RootState } from "../../../common/store/store";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
 import { VInput } from "../../../ui/input/VInput";
 import OnboardingFooter from "../components/OnboardingFooter";
@@ -44,18 +48,26 @@ const validationSchema = Yup.object().shape({
   ),
 });
 
-const initialValues: SocialMediaDetailsFormData = {
-  facebookUrl: "",
-  linkedinUrl: "",
-  instagramUrl: "",
-  twitterUrl: "",
-  pinterestUrl: "",
-  tiktokUrl: "",
-};
-
 const SocialMediaView: React.FC<SocialMediaViewProps> = (
   props: SocialMediaViewProps
 ) => {
+  const dispatch = useAppDispatch();
+  const socialMediaDetails = useAppSelector(
+    (s: RootState) => s.clientDetails.socialMediaDetails
+  );
+
+  const initialValues: SocialMediaDetailsFormData = {
+    facebookUrl: socialMediaDetails?.formData?.facebookUrl || "",
+    linkedinUrl: socialMediaDetails?.formData?.linkedinUrl || "",
+    instagramUrl: socialMediaDetails?.formData?.instagramUrl || "",
+    twitterUrl: socialMediaDetails?.formData?.twitterUrl || "",
+    pinterestUrl: socialMediaDetails?.formData?.pinterestUrl || "",
+    tiktokUrl: socialMediaDetails?.formData?.tiktokUrl || "",
+  };
+
+  const handleBackClick = () => {
+    dispatch(setClientDetailsStatus(ClientDetailsStatus.BasicDetails));
+  };
   const handleSubmit = (
     values: SocialMediaDetailsFormData,
     actions: FormikHelpers<SocialMediaDetailsFormData>
@@ -178,7 +190,11 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
                   : undefined
               }
             />
-            <OnboardingFooter type="submit" text={"Continue"} />
+            <OnboardingFooter
+              type="submit"
+              text={"Continue"}
+              onBackClick={handleBackClick}
+            />
           </Form>
         )}
       </Formik>

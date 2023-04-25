@@ -5,9 +5,11 @@ interface VButtonProps {
   text: string;
   type?: "button" | "submit" | "reset";
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLButtonElement>) => void;
   classNames?: string[];
   disabled?: boolean;
   size?: "sm" | "lg";
+  tabIndex?: number;
 }
 
 const VButton: React.FC<VButtonProps> = (props: VButtonProps) => {
@@ -29,6 +31,7 @@ const VButton: React.FC<VButtonProps> = (props: VButtonProps) => {
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleClick(e)}
       disabled={props.disabled}
       style={{ color: "white" }}
+      onKeyDown={props.onKeyDown}
     >
       {props.text}
     </button>
