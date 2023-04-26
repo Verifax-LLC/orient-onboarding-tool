@@ -53,6 +53,13 @@ export const setContentSpecs =
     dispatch(setClientDetailsStatus(ClientDetailsStatus.PaymentDetails));
   };
 
+//set file dialog open
+export const setFileUploadDialogOpen =
+  (open: boolean): AppThunk =>
+  async (dispatch: AppDispatch) => {
+    dispatch(clientDetailsSlice.actions.setFileUploadDialogOpen(open));
+  };
+
 //set payment details
 // export const setPaymentDetails =
 //   (paymentDetails: BasicDetailsState): AppThunk =>

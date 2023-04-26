@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useAppDispatch } from "../../../common/store/hooks";
 
 interface FileUploadProps {
   id: string;
@@ -7,35 +8,28 @@ interface FileUploadProps {
   placeholder?: string;
   icon?: JSX.Element;
   required: boolean;
-  onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
+  onClick?: () => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = (props: FileUploadProps) => {
+const FileUploadZone: React.FC<FileUploadProps> = (props: FileUploadProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const dispatch = useAppDispatch();
 
-  const handleClick = () => {
-    // 👇️ open file input box on click of another element
-    inputRef.current?.click();
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log(inputRef);
+    props.onClick?.() ?? inputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileObj = event.target.files && event.target.files[0];
-    if (!fileObj) {
-      return;
-    }
-
-    // 👇️ is now empty
-    console.log(event.target.files);
-
-    // 👇️ can still access file object here
-    console.log(fileObj);
-    console.log(fileObj.name);
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []).map((f: File) => f);
+    //upload to server?
   };
+
   return (
-    <div className="form-control">
+    <div className="form-control" onClick={handleClick}>
       {props.label && <label className="label">{props.label}</label>}
       <div
-        className="w-full border h-fit flex flex-col gap-2"
+        className="w-full border h-fit flex flex-col gap-2 p-1"
         style={{ borderColor: "#EAECF0" }}
       >
         <div className="w-1/6 mx-auto">
@@ -61,15 +55,21 @@ const FileUpload: React.FC<FileUploadProps> = (props: FileUploadProps) => {
             </div>
           </div>
         </div>
-        <p className="text-sm" style={{ color: "#6941C6" }}>
+        <p className="text-sm text-center" style={{ color: "#6941C6" }}>
           Click to upload and attach files
         </p>
-        <p className="text-sm text-secondary">
+        <p className="text-sm text-center text-secondary">
           SVG, PNG, JPG, PDF, Xlsx, Docx (max 10mb)
         </p>
+        <input
+          type="file"
+          className="hidden"
+          ref={inputRef}
+          onChange={handleFileUpload}
+        />
       </div>
     </div>
   );
 };
 
-export default FileUpload;
+export default FileUploadZone;

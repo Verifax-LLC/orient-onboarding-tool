@@ -57,12 +57,18 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
   );
 
   const initialValues: SocialMediaDetailsFormData = {
-    facebookUrl: socialMediaDetails?.formData?.facebookUrl || "",
-    linkedinUrl: socialMediaDetails?.formData?.linkedinUrl || "",
-    instagramUrl: socialMediaDetails?.formData?.instagramUrl || "",
-    twitterUrl: socialMediaDetails?.formData?.twitterUrl || "",
-    pinterestUrl: socialMediaDetails?.formData?.pinterestUrl || "",
-    tiktokUrl: socialMediaDetails?.formData?.tiktokUrl || "",
+    facebookUrl:
+      socialMediaDetails?.formData?.facebookUrl.replace("https://", "") || "",
+    linkedinUrl:
+      socialMediaDetails?.formData?.linkedinUrl.replace("https://", "") || "",
+    instagramUrl:
+      socialMediaDetails?.formData?.instagramUrl.replace("https://", "") || "",
+    twitterUrl:
+      socialMediaDetails?.formData?.twitterUrl.replace("https://", "") || "",
+    pinterestUrl:
+      socialMediaDetails?.formData?.pinterestUrl.replace("https://", "") || "",
+    tiktokUrl:
+      socialMediaDetails?.formData?.tiktokUrl.replace("https://", "") || "",
   };
 
   const handleBackClick = () => {

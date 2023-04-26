@@ -23,7 +23,7 @@ const PreparationView: React.FC<PreparationViewProps> = (
       </p>
       <div className="w-[290px] text-start mx-auto">
         <div
-          className="badge inline-flex"
+          className="badge badge-success inline-flex"
           style={{ backgroundColor: "#D1FADF" }}
         >
           &#x2714;
@@ -34,7 +34,7 @@ const PreparationView: React.FC<PreparationViewProps> = (
       </div>
       <div className="w-[290px] text-start mx-auto">
         <div
-          className="badge inline-flex"
+          className="badge badge-success inline-flex"
           style={{ backgroundColor: "#D1FADF" }}
         >
           &#x2714;
@@ -45,7 +45,7 @@ const PreparationView: React.FC<PreparationViewProps> = (
       </div>
       <div className="w-[290px] text-start mx-auto">
         <div
-          className="badge inline-flex"
+          className="badge badge-success inline-flex"
           style={{ backgroundColor: "#D1FADF" }}
         >
           &#x2714;

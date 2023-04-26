@@ -2,13 +2,16 @@ import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
 import * as Yup from "yup";
 import { ClientDetailsStatus } from "../../../common/client-details/client-details.enums";
-import { setClientDetailsStatus } from "../../../common/client-details/client-details.thunks";
+import {
+  setClientDetailsStatus,
+  setFileUploadDialogOpen,
+} from "../../../common/client-details/client-details.thunks";
 import { useAppDispatch } from "../../../common/store/hooks";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
 import VCurrencyInput from "../../../ui/input/VCurrencyInput";
 import { VInput } from "../../../ui/input/VInput";
 import { VSelect } from "../../../ui/select/VSelect";
-import FileUpload from "../components/FileUpload";
+import FileUploadZone from "../components/FileUploadZone";
 import OnboardingFooter from "../components/OnboardingFooter";
 
 interface ContentSpecsViewProps {
@@ -20,7 +23,6 @@ export type PostingInterval = "3d" | "7d" | "14d" | "30d";
 export interface ContentSpecsFormData {
   postingInterval: PostingInterval;
   monthlyBudget: number;
-  files: File[];
   additionalComments: string;
 }
 
@@ -36,7 +38,6 @@ const validationSchema = Yup.object().shape({
 const initialValues: ContentSpecsFormData = {
   postingInterval: "3d",
   monthlyBudget: 0,
-  files: [],
   additionalComments: "",
 };
 
@@ -53,7 +54,7 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
   const dispatch = useAppDispatch();
 
   const handleBackClick = () => {
-    dispatch(setClientDetailsStatus(ClientDetailsStatus.BasicDetails));
+    dispatch(setClientDetailsStatus(ClientDetailsStatus.SocialMediaDetails));
   };
   const [openFileUpload, setOpenFileUpload] = React.useState<boolean>(false);
   const handleSubmit = (
@@ -98,7 +99,7 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
             <VCurrencyInput
               id="input-example"
               name="input-name"
-              label="Monthly budget"
+              label="Monthly budget (estimated)"
               placeholder="Please enter a number"
               required
               value={values.monthlyBudget}
@@ -115,18 +116,8 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
                   : undefined
               }
             />
-            {/* <VInput
-              label="Attach files"
-              type="text"
-              name="files"
-              placeholder="example-file.pdf"
-              value={values.files}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.files && touched.files ? errors.files : undefined}
-            /> */}
-            <FileUpload
-              id={""}
+            <FileUploadZone
+              id={"content-specs-file-upload"}
               label="Attach files"
               icon={
                 <img
@@ -137,7 +128,7 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
               }
               name={"fileUpload"}
               required={false}
-              onClick={() => setOpenFileUpload(true)}
+              onClick={() => dispatch(setFileUploadDialogOpen(true))}
             />
             <VInput
               label="Additional Comments"

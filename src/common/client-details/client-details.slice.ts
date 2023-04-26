@@ -16,15 +16,17 @@ interface ClientDetailsState {
   socialMediaDetails?: SocialMediaDetailsState;
   contentSpecs?: ContentSpecsState;
   paymentDetails?: PaymentDetailsState;
+  fileUploadDialogOpen: boolean;
 }
 
 const initialState: ClientDetailsState = {
   currentClient: undefined,
-  status: ClientDetailsStatus.Preparation,
+  status: ClientDetailsStatus.ContentSpecs,
   basicDetails: undefined,
   socialMediaDetails: undefined,
   contentSpecs: undefined,
   paymentDetails: undefined,
+  fileUploadDialogOpen: false,
 };
 
 // Reducers
@@ -64,6 +66,12 @@ export const clientDetailsSlice = createSlice({
       action: PayloadAction<PaymentDetailsState>
     ) => {
       state.paymentDetails = action.payload;
+    },
+    setFileUploadDialogOpen: (
+      state: ClientDetailsState,
+      action: PayloadAction<boolean>
+    ) => {
+      state.fileUploadDialogOpen = action.payload;
     },
   },
 });
