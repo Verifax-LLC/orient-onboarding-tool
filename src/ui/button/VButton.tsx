@@ -2,7 +2,7 @@ import classNames from "classnames";
 import React from "react";
 
 interface VButtonProps {
-  text: string;
+  text?: string;
   type?: "button" | "submit" | "reset";
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLButtonElement>) => void;
@@ -10,6 +10,7 @@ interface VButtonProps {
   disabled?: boolean;
   size?: "sm" | "lg";
   tabIndex?: number;
+  children?: React.ReactNode;
 }
 
 const VButton: React.FC<VButtonProps> = (props: VButtonProps) => {
@@ -33,7 +34,7 @@ const VButton: React.FC<VButtonProps> = (props: VButtonProps) => {
       style={{ color: "white" }}
       onKeyDown={props.onKeyDown}
     >
-      {props.text}
+      {props.text ?? props.children}
     </button>
   );
 };
