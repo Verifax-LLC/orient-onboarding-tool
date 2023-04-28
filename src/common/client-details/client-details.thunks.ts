@@ -41,6 +41,13 @@ export const setSocialMediaDetails =
     dispatch(setClientDetailsStatus(ClientDetailsStatus.ContentSpecs));
   };
 
+//set hasuploadedfiles
+export const setHasUploadedFiles =
+  (hasUploadedFiles: boolean): AppThunk =>
+  async (dispatch: AppDispatch) => {
+    dispatch(clientDetailsSlice.actions.setHasUploadedFiles(hasUploadedFiles));
+  };
+
 //set content specs
 export const setContentSpecs =
   (contentSpecs: ContentSpecsFormData): AppThunk =>

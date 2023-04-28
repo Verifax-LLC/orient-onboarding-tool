@@ -2,6 +2,7 @@ import { ClientDetailsStatus } from "../common/client-details/client-details.enu
 import {
   setBasicDetails,
   setClientDetailsStatus,
+  setContentSpecs,
   setSocialMediaDetails,
 } from "../common/client-details/client-details.thunks";
 import { useAppDispatch, useAppSelector } from "../common/store/hooks";
@@ -9,7 +10,9 @@ import { RootState } from "../common/store/store";
 import BasicDetailsView, {
   BasicDetailsFormData,
 } from "../features/onboarding-workflow/views/BasicDetailsView";
-import ContentSpecsView from "../features/onboarding-workflow/views/ContentSpecsView";
+import ContentSpecsView, {
+  ContentSpecsFormData,
+} from "../features/onboarding-workflow/views/ContentSpecsView";
 import PreparationView from "../features/onboarding-workflow/views/PreparationView";
 import SocialMediaView, {
   SocialMediaDetailsFormData,
@@ -25,6 +28,10 @@ const OnboardingView: React.FC = () => {
 
   const handlePassedSocialMedia = (values: SocialMediaDetailsFormData) => {
     dispatch(setSocialMediaDetails(values));
+  };
+
+  const handlePassedContentSpecs = (values: ContentSpecsFormData) => {
+    dispatch(setContentSpecs(values));
   };
 
   if (formStatus === ClientDetailsStatus.Preparation) {
@@ -58,7 +65,13 @@ const OnboardingView: React.FC = () => {
   }
 
   if (formStatus === ClientDetailsStatus.ContentSpecs) {
-    return <ContentSpecsView />;
+    return (
+      <ContentSpecsView
+        onClick={(values: ContentSpecsFormData) =>
+          handlePassedContentSpecs(values)
+        }
+      />
+    );
   }
 
   return <div>Onboarding complete</div>;

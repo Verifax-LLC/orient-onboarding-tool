@@ -1,21 +1,18 @@
 import { formatBytes } from "../../../common/helpers/files";
 
-export interface FileListItem {
-  fileName: string;
-  fileSize: number;
-  fileType: string;
-}
-
 interface FileListProps {
-  files: FileListItem[];
+  files: File[];
   removeItem: (index: number) => void;
 }
 
 const FileList: React.FC<FileListProps> = (props: FileListProps) => {
   return (
-    <div className="max-h-60 overflow-auto">
+    <div className="max-h-70 overflow-auto">
       {props.files.map((file, _idx) => (
-        <div className="flex flex-row justify-between items-center border border-primary rounded-md w-full my-4 p-2">
+        <div
+          key={_idx}
+          className="flex flex-row justify-between items-center border border-primary rounded-md w-full my-4 p-2"
+        >
           <div className="flex-col">
             <button
               className="p-2 rounded-full"
@@ -36,11 +33,11 @@ const FileList: React.FC<FileListProps> = (props: FileListProps) => {
                 />
               </svg>
             </button>
-            <p className="text-secondary text-xs">{file.fileType}</p>
+            <p className="text-secondary text-xs">{file.type}</p>
           </div>
           <div className="flex-col gap-2">
-            <p className="text-primary">{file.fileName}</p>
-            <p className="text-xs">{formatBytes(file.fileSize)}</p>
+            <p className="text-primary">{file.name}</p>
+            <p className="text-xs">{formatBytes(file.size)}</p>
           </div>
           <button
             className="p-2 hover:bg-base-200 rounded-full"

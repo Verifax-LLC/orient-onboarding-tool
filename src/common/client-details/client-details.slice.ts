@@ -21,7 +21,7 @@ interface ClientDetailsState {
 
 const initialState: ClientDetailsState = {
   currentClient: undefined,
-  status: ClientDetailsStatus.ContentSpecs,
+  status: ClientDetailsStatus.Preparation,
   basicDetails: undefined,
   socialMediaDetails: undefined,
   contentSpecs: undefined,
@@ -72,6 +72,12 @@ export const clientDetailsSlice = createSlice({
       action: PayloadAction<boolean>
     ) => {
       state.fileUploadDialogOpen = action.payload;
+    },
+    setHasUploadedFiles: (
+      state: ClientDetailsState,
+      action: PayloadAction<boolean>
+    ) => {
+      state.contentSpecs = { formData: { hasUploadedFiles: action.payload } };
     },
   },
 });

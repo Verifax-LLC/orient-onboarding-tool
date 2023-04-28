@@ -6,7 +6,8 @@ import {
   setClientDetailsStatus,
   setFileUploadDialogOpen,
 } from "../../../common/client-details/client-details.thunks";
-import { useAppDispatch } from "../../../common/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../common/store/hooks";
+import { RootState } from "../../../common/store/store";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
 import VCurrencyInput from "../../../ui/input/VCurrencyInput";
 import { VInput } from "../../../ui/input/VInput";
@@ -21,9 +22,10 @@ interface ContentSpecsViewProps {
 export type PostingInterval = "3d" | "7d" | "14d" | "30d";
 
 export interface ContentSpecsFormData {
-  postingInterval: PostingInterval;
-  monthlyBudget: number;
-  additionalComments: string;
+  postingInterval?: PostingInterval;
+  monthlyBudget?: number;
+  additionalComments?: string;
+  hasUploadedFiles?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
@@ -34,12 +36,6 @@ const validationSchema = Yup.object().shape({
   files: Yup.array().of(Yup.mixed().required("File is required")),
   additionalComments: Yup.string(),
 });
-
-const initialValues: ContentSpecsFormData = {
-  postingInterval: "3d",
-  monthlyBudget: 0,
-  additionalComments: "",
-};
 
 const postingIntervalOptions: { value: PostingInterval; label: string }[] = [
   { value: "3d", label: "3 days" },
@@ -52,16 +48,24 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
   props: ContentSpecsViewProps
 ) => {
   const dispatch = useAppDispatch();
+  const contentSpecsValues = useAppSelector(
+    (s: RootState) => s.clientDetails.contentSpecs?.formData
+  );
+
+  const initialValues: ContentSpecsFormData = {
+    postingInterval: contentSpecsValues?.postingInterval ?? "3d",
+    monthlyBudget: contentSpecsValues?.monthlyBudget ?? 0,
+    additionalComments: contentSpecsValues?.additionalComments ?? "",
+  };
 
   const handleBackClick = () => {
     dispatch(setClientDetailsStatus(ClientDetailsStatus.SocialMediaDetails));
   };
-  const [openFileUpload, setOpenFileUpload] = React.useState<boolean>(false);
   const handleSubmit = (
     values: ContentSpecsFormData,
     actions: FormikHelpers<ContentSpecsFormData>
   ) => {
-    props.onClick?.(values);
+    props.onClick?.({ ...contentSpecsValues, ...values });
     // If the submission is successful, reset the form
     actions.resetForm();
   };
@@ -102,9 +106,9 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
               label="Monthly budget (estimated)"
               placeholder="Please enter a number"
               required
-              value={values.monthlyBudget}
+              value={values.monthlyBudget ?? 0}
               prefix="$"
-              defaultValue={initialValues.monthlyBudget}
+              defaultValue={initialValues.monthlyBudget ?? 0}
               decimalsLimit={2}
               onValueChange={(value, name) =>
                 setFieldValue("monthlyBudget", value)
@@ -116,20 +120,40 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
                   : undefined
               }
             />
-            <FileUploadZone
-              id={"content-specs-file-upload"}
-              label="Attach files"
-              icon={
-                <img
-                  src="/file-upload-icon.png"
-                  alt="File upload icon"
-                  color="black"
-                />
-              }
-              name={"fileUpload"}
-              required={false}
-              onClick={() => dispatch(setFileUploadDialogOpen(true))}
-            />
+            {!contentSpecsValues?.hasUploadedFiles ? (
+              <FileUploadZone
+                id={"content-specs-file-upload"}
+                label="Attach files"
+                icon={
+                  <img
+                    src="/file-upload-icon.png"
+                    alt="File upload icon"
+                    color="black"
+                  />
+                }
+                name={"fileUpload"}
+                required={false}
+                onClick={() => dispatch(setFileUploadDialogOpen(true))}
+              />
+            ) : (
+              //green circle checkmark
+              <div className="flex flex-col items-center justify-center p-6 bg-success">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"
+                  />
+                </svg>
+              </div>
+            )}
             <VInput
               label="Additional Comments"
               type="text"

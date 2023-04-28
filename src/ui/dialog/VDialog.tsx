@@ -24,7 +24,7 @@ const VDialog: React.FC<VDialogProps> = (props: VDialogProps) => {
           <div className="p-4">{props.children}</div>
           <div className="modal-action">
             <button onClick={handleDoneClick} className="btn btn-primary">
-              Done
+              <p className="text-base-100">Done</p>
             </button>
           </div>
         </div>

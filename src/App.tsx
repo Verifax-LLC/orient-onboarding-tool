@@ -14,7 +14,6 @@ function App() {
 
   useEffect(() => {
     if (tenantId) {
-      console.log(tenantId);
       dispatch(setTenant(tenantId));
     }
   }, [tenantId]);

@@ -1,9 +1,6 @@
-import axios from "axios";
 import React, { useRef } from "react";
-import { useAppDispatch } from "../../../common/store/hooks";
-import FileList, { FileListItem } from "./FileList";
 
-interface FileUploadProps {
+interface FileUploadZoneProps {
   id: string;
   name: string;
   label?: string;
@@ -11,6 +8,7 @@ interface FileUploadProps {
   icon?: JSX.Element;
   required: boolean;
   onClick?: () => void;
+  setFileListItems?: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -25,11 +23,11 @@ export const ACCEPTED_FILE_TYPES = [
   "application/doc",
 ];
 
-const FileUploadZone: React.FC<FileUploadProps> = (props: FileUploadProps) => {
+const FileUploadZone: React.FC<FileUploadZoneProps> = (
+  props: FileUploadZoneProps
+) => {
   const [errors, setErrors] = React.useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [fileListItems, setFileListItems] = React.useState<FileListItem[]>([]);
-  const dispatch = useAppDispatch();
 
   //validate files
   const validateFiles = (files: File[]) => {
@@ -52,28 +50,7 @@ const FileUploadZone: React.FC<FileUploadProps> = (props: FileUploadProps) => {
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log(inputRef);
     props.onClick?.() ?? inputRef.current?.click();
-  };
-  const uploadFiles = async (files: File[]) => {
-    const formData = new FormData();
-    formData.append("TenantId", "1");
-    formData.append("ClientId", "1");
-    files.forEach((file) => formData.append("files", file));
-
-    try {
-      const response = await axios.post(
-        import.meta.env.VITE_FILE_SERVICE_URL,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const handleFileList = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,17 +58,8 @@ const FileUploadZone: React.FC<FileUploadProps> = (props: FileUploadProps) => {
     validateFiles(files);
 
     if (errors.length === 0) {
-      const fileListItems: FileListItem[] = files.map((file) => ({
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type,
-      }));
-      setFileListItems(fileListItems);
+      props.setFileListItems?.(files);
     }
-  };
-
-  const removeFileFromList = (index: number) => {
-    setFileListItems((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -141,11 +109,6 @@ const FileUploadZone: React.FC<FileUploadProps> = (props: FileUploadProps) => {
       {errors.length > 0 && (
         <p className="text-sm text-red-500">{errors.join(", ")}</p>
       )}
-      <div className="w-full h-fit mt-4">
-        {fileListItems.length > 0 && (
-          <FileList files={fileListItems} removeItem={removeFileFromList} />
-        )}
-      </div>
     </div>
   );
 };
