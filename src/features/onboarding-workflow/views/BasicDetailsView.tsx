@@ -1,7 +1,7 @@
 import { Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
-import { ClientDetailsStatus } from "../../../common/client-details/client-details.enums";
 import { setClientDetailsStatus } from "../../../common/client-details/client-details.thunks";
+import { ProcessStatus } from "../../../common/models/process.enums";
 import { useAppDispatch, useAppSelector } from "../../../common/store/hooks";
 import { RootState } from "../../../common/store/store";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
@@ -63,7 +63,7 @@ const BasicDetailsView: React.FC<BasicDetailsViewProps> = (
   };
 
   const handleBackClick = () => {
-    dispatch(setClientDetailsStatus(ClientDetailsStatus.Preparation));
+    dispatch(setClientDetailsStatus(ProcessStatus.Preparation));
   };
 
   const handleSubmit = (

@@ -1,11 +1,11 @@
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
 import * as Yup from "yup";
-import { ClientDetailsStatus } from "../../../common/client-details/client-details.enums";
 import {
   setClientDetailsStatus,
   setFileUploadDialogOpen,
 } from "../../../common/client-details/client-details.thunks";
+import { ProcessStatus } from "../../../common/models/process.enums";
 import { useAppDispatch, useAppSelector } from "../../../common/store/hooks";
 import { RootState } from "../../../common/store/store";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
@@ -59,7 +59,7 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
   };
 
   const handleBackClick = () => {
-    dispatch(setClientDetailsStatus(ClientDetailsStatus.SocialMediaDetails));
+    dispatch(setClientDetailsStatus(ProcessStatus.SocialMediaDetails));
   };
   const handleSubmit = (
     values: ContentSpecsFormData,
@@ -136,23 +136,30 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
                 onClick={() => dispatch(setFileUploadDialogOpen(true))}
               />
             ) : (
-              //green circle checkmark
-              <div className="flex flex-col items-center justify-center p-6 bg-success">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
+              <>
+                <div
+                  className="flex flex-col items-center justify-center p-6 rounded-full w-20 mx-auto"
+                  style={{ backgroundColor: "#D1FADF" }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.5 12.75l6 6 9-13.5"
-                  />
-                </svg>
-              </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 12.75l6 6 9-13.5"
+                    />
+                  </svg>
+                </div>
+                <p className="text-center text-primary">
+                  Files uploaded successfully!
+                </p>
+              </>
             )}
             <VInput
               label="Additional Comments"

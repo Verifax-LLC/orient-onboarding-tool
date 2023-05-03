@@ -1,17 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ClientDetailsStatus } from "./client-details.enums";
+import { Client, ClientDetails } from "../models/client-details.models";
+import { ProcessStatus } from "../models/process.enums";
 import {
   BasicDetailsState,
-  Client,
   ContentSpecsState,
   PaymentDetailsState,
   SocialMediaDetailsState,
-} from "./client-details.models";
+} from "../models/process.models";
 
 // State
 interface ClientDetailsState {
   currentClient?: Client;
-  status: ClientDetailsStatus;
+  createdClientDetails?: ClientDetails;
+  status: ProcessStatus;
   basicDetails?: BasicDetailsState;
   socialMediaDetails?: SocialMediaDetailsState;
   contentSpecs?: ContentSpecsState;
@@ -21,7 +22,8 @@ interface ClientDetailsState {
 
 const initialState: ClientDetailsState = {
   currentClient: undefined,
-  status: ClientDetailsStatus.Preparation,
+  createdClientDetails: undefined,
+  status: ProcessStatus.ContentSpecs,
   basicDetails: undefined,
   socialMediaDetails: undefined,
   contentSpecs: undefined,
@@ -37,9 +39,15 @@ export const clientDetailsSlice = createSlice({
     setClient: (state: ClientDetailsState, action: PayloadAction<Client>) => {
       state.currentClient = action.payload;
     },
+    setCreatedClientDetails: (
+      state: ClientDetailsState,
+      action: PayloadAction<ClientDetails>
+    ) => {
+      state.createdClientDetails = action.payload;
+    },
     setStatus: (
       state: ClientDetailsState,
-      action: PayloadAction<ClientDetailsStatus>
+      action: PayloadAction<ProcessStatus>
     ) => {
       state.status = action.payload;
     },

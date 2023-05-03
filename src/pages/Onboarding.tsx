@@ -1,10 +1,10 @@
-import { ClientDetailsStatus } from "../common/client-details/client-details.enums";
 import {
   setBasicDetails,
   setClientDetailsStatus,
   setContentSpecs,
   setSocialMediaDetails,
 } from "../common/client-details/client-details.thunks";
+import { ProcessStatus } from "../common/models/process.enums";
 import { useAppDispatch, useAppSelector } from "../common/store/hooks";
 import { RootState } from "../common/store/store";
 import BasicDetailsView, {
@@ -34,17 +34,17 @@ const OnboardingView: React.FC = () => {
     dispatch(setContentSpecs(values));
   };
 
-  if (formStatus === ClientDetailsStatus.Preparation) {
+  if (formStatus === ProcessStatus.Preparation) {
     return (
       <PreparationView
         onClick={() =>
-          dispatch(setClientDetailsStatus(ClientDetailsStatus.BasicDetails))
+          dispatch(setClientDetailsStatus(ProcessStatus.BasicDetails))
         }
       />
     );
   }
 
-  if (formStatus === ClientDetailsStatus.BasicDetails) {
+  if (formStatus === ProcessStatus.BasicDetails) {
     return (
       <BasicDetailsView
         onClick={(values: BasicDetailsFormData) =>
@@ -54,7 +54,7 @@ const OnboardingView: React.FC = () => {
     );
   }
 
-  if (formStatus === ClientDetailsStatus.SocialMediaDetails) {
+  if (formStatus === ProcessStatus.SocialMediaDetails) {
     return (
       <SocialMediaView
         onClick={(values: SocialMediaDetailsFormData) =>
@@ -64,7 +64,7 @@ const OnboardingView: React.FC = () => {
     );
   }
 
-  if (formStatus === ClientDetailsStatus.ContentSpecs) {
+  if (formStatus === ProcessStatus.ContentSpecs) {
     return (
       <ContentSpecsView
         onClick={(values: ContentSpecsFormData) =>
