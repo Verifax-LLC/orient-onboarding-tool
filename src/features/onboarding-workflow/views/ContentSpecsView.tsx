@@ -11,7 +11,6 @@ import { RootState } from "../../../common/store/store";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
 import VCurrencyInput from "../../../ui/input/VCurrencyInput";
 import { VInput } from "../../../ui/input/VInput";
-import { VSelect } from "../../../ui/select/VSelect";
 import FileUploadZone from "../components/FileUploadZone";
 import OnboardingFooter from "../components/OnboardingFooter";
 
@@ -19,30 +18,29 @@ interface ContentSpecsViewProps {
   onClick?: (values: ContentSpecsFormData) => void;
 }
 
-export type PostingInterval = "3d" | "7d" | "14d" | "30d";
-
 export interface ContentSpecsFormData {
-  postingInterval?: PostingInterval;
+  brandGuidelines?: string;
+  communicationPref?: string;
   monthlyBudget?: number;
+  revenue?: number;
   additionalComments?: string;
   hasUploadedFiles?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
-  postingInterval: Yup.string().required("Posting interval is required"),
+  brandGuidelines: Yup.string().required("Brand guidelines are required"),
+  communicationPref: Yup.string().required(
+    "Communication preference is required"
+  ),
   monthlyBudget: Yup.number()
+    .min(1, "Monthly budget must be at least 1")
+    .required("Monthly budget is required"),
+  revenue: Yup.number()
     .min(1, "Monthly budget must be at least 1")
     .required("Monthly budget is required"),
   files: Yup.array().of(Yup.mixed().required("File is required")),
   additionalComments: Yup.string(),
 });
-
-const postingIntervalOptions: { value: PostingInterval; label: string }[] = [
-  { value: "3d", label: "3 days" },
-  { value: "7d", label: "7 days" },
-  { value: "14d", label: "14 days" },
-  { value: "30d", label: "30 days" },
-];
 
 const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
   props: ContentSpecsViewProps
@@ -53,13 +51,15 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
   );
 
   const initialValues: ContentSpecsFormData = {
-    postingInterval: contentSpecsValues?.postingInterval ?? "3d",
+    brandGuidelines: contentSpecsValues?.brandGuidelines ?? "",
+    communicationPref: contentSpecsValues?.communicationPref ?? "email",
+    revenue: contentSpecsValues?.revenue ?? 0,
     monthlyBudget: contentSpecsValues?.monthlyBudget ?? 0,
     additionalComments: contentSpecsValues?.additionalComments ?? "",
   };
 
   const handleBackClick = () => {
-    dispatch(setClientDetailsStatus(ProcessStatus.SocialMediaDetails));
+    dispatch(setClientDetailsStatus(ProcessStatus.ProjectScope));
   };
   const handleSubmit = (
     values: ContentSpecsFormData,
@@ -87,18 +87,33 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
           setFieldValue,
         }) => (
           <Form className="space-y-4 max-w-sm mx-auto">
-            <VSelect
-              label="Posting Interval"
-              required
-              name="postingInterval"
-              value={values.postingInterval}
-              onChange={(e) => setFieldValue("postingInterval", e.target.value)}
+            <VInput
+              label="Brand guidelines"
+              type="text"
+              name="brandGuidelines"
+              placeholder="Please enter brand guidelines"
+              value={values.brandGuidelines}
+              onChange={handleChange}
+              onBlur={handleBlur}
               error={
-                errors.postingInterval && touched.postingInterval
-                  ? errors.postingInterval
+                errors.brandGuidelines && touched.brandGuidelines
+                  ? errors.brandGuidelines
                   : undefined
               }
-              options={postingIntervalOptions}
+            />
+            <VInput
+              label="Communication preference"
+              type="text"
+              name="communicationPref"
+              placeholder="Please enter communication preference"
+              value={values.communicationPref}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={
+                errors.communicationPref && touched.communicationPref
+                  ? errors.communicationPref
+                  : undefined
+              }
             />
             <VCurrencyInput
               id="input-example"
@@ -120,10 +135,26 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
                   : undefined
               }
             />
+            <VCurrencyInput
+              id="input-example"
+              name="input-name"
+              label="Annual revenue (estimated)"
+              placeholder="Please enter a number"
+              required
+              value={values.revenue ?? 0}
+              prefix="$"
+              defaultValue={initialValues.revenue ?? 0}
+              decimalsLimit={2}
+              onValueChange={(value, name) => setFieldValue("revenue", value)}
+              onBlur={handleBlur}
+              error={
+                errors.revenue && touched.revenue ? errors.revenue : undefined
+              }
+            />
             {!contentSpecsValues?.hasUploadedFiles ? (
               <FileUploadZone
                 id={"content-specs-file-upload"}
-                label="Attach files"
+                label="Attach files (style guide, logos, etc.)"
                 icon={
                   <img
                     src="/file-upload-icon.png"
@@ -177,7 +208,7 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
             />
             <OnboardingFooter
               type="submit"
-              text={"Continue"}
+              text={"Submit and finish"}
               onBackClick={handleBackClick}
             />
           </Form>

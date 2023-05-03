@@ -1,10 +1,12 @@
 import { BasicDetailsFormData } from "../../features/onboarding-workflow/views/BasicDetailsView";
 import { ContentSpecsFormData } from "../../features/onboarding-workflow/views/ContentSpecsView";
+import { ProjectScopeFormData } from "../../features/onboarding-workflow/views/ProjectScopeView";
 import { SocialMediaDetailsFormData } from "../../features/onboarding-workflow/views/SocialMediaView";
 import { Client, ClientDetails } from "../models/client-details.models";
 import { ProcessStatus } from "../models/process.enums";
 import apiClient from "../site/axios-instance";
-import { AppDispatch, AppThunk } from "../store/store";
+import { setNetworkError } from "../site/global.thunks";
+import { AppDispatch, AppThunk, RootState } from "../store/store";
 import { ClientService } from "./client-details.service";
 import { clientDetailsSlice } from "./client-details.slice";
 
@@ -35,7 +37,7 @@ export const setSocialMediaDetails =
         formData: socialMediaDetails,
       })
     );
-    dispatch(setClientDetailsStatus(ProcessStatus.ContentSpecs));
+    dispatch(setClientDetailsStatus(ProcessStatus.ProjectScope));
   };
 
 //set hasuploadedfiles
@@ -43,6 +45,18 @@ export const setHasUploadedFiles =
   (hasUploadedFiles: boolean): AppThunk =>
   async (dispatch: AppDispatch) => {
     dispatch(clientDetailsSlice.actions.setHasUploadedFiles(hasUploadedFiles));
+  };
+
+//set project scope
+export const setProjectScope =
+  (projectScope: ProjectScopeFormData): AppThunk =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      clientDetailsSlice.actions.setProjectScope({
+        formData: projectScope,
+      })
+    );
+    dispatch(setClientDetailsStatus(ProcessStatus.ContentSpecs));
   };
 
 //set content specs
@@ -54,7 +68,7 @@ export const setContentSpecs =
         formData: contentSpecs,
       })
     );
-    dispatch(setClientDetailsStatus(ProcessStatus.PaymentDetails));
+    dispatch(setClientDetailsStatus(ProcessStatus.Review));
   };
 
 //set file dialog open
@@ -64,19 +78,17 @@ export const setFileUploadDialogOpen =
     dispatch(clientDetailsSlice.actions.setFileUploadDialogOpen(open));
   };
 
-//set payment details
-// export const setPaymentDetails =
-//   (paymentDetails: BasicDetailsState): AppThunk =>
-//   async (dispatch: AppDispatch) => {
-//     dispatch(clientDetailsSlice.actions.setPaymentDetails(paymentDetails));
-//   };
-
 export const createClient =
-  (client: Client): AppThunk =>
+  (client: Client, onSuccess?: (client: Client) => void): AppThunk =>
   async (dispatch: AppDispatch) => {
     try {
       const clientResponse: Client = await clientService.createClient(client);
-      dispatch(clientDetailsSlice.actions.setClient(clientResponse));
+      if (clientResponse.id) {
+        dispatch(clientDetailsSlice.actions.setClient(clientResponse));
+        onSuccess?.(clientResponse);
+      } else {
+        setNetworkError(true, new Error("Client not created"));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -84,17 +96,116 @@ export const createClient =
 
 //create client details
 export const createClientDetails =
-  (clientDetails: ClientDetails): AppThunk =>
+  (clientDetails: ClientDetails, onSuccess?: () => void): AppThunk =>
   async (dispatch: AppDispatch) => {
     try {
       const clientDetailsResponse: ClientDetails =
         await clientService.createClientDetails(clientDetails);
-      dispatch(
-        clientDetailsSlice.actions.setCreatedClientDetails(
-          clientDetailsResponse
-        )
-      );
+
+      if (clientDetailsResponse.clientId) {
+        dispatch(
+          clientDetailsSlice.actions.setCreatedClientDetails(
+            clientDetailsResponse
+          )
+        );
+        onSuccess?.();
+      } else {
+        setNetworkError(true, new Error("Client not created"));
+      }
+    } catch (error) {
+      setNetworkError(true, new Error(error as string));
+    }
+  };
+
+export const submitAllDetails =
+  (): AppThunk => async (dispatch: AppDispatch, getState: () => RootState) => {
+    try {
+      dispatch(clientDetailsSlice.actions.setIsSubmitting(true));
+      dispatch(setClientDetailsStatus(ProcessStatus.Review));
+      const state = getState();
+      if (state.clientDetails.currentTenant?.id) {
+        const client: Client = {
+          firstName:
+            state.clientDetails?.basicDetails?.formData.firstName || "",
+          lastName: state.clientDetails?.basicDetails?.formData.lastName || "",
+          phone: state.clientDetails?.basicDetails?.formData.phoneNumber || "",
+          primaryEmail: state.clientDetails?.basicDetails?.formData.email || "",
+          name:
+            state.clientDetails?.basicDetails?.formData.firstName ||
+            "" + " " + state.clientDetails?.basicDetails?.formData.lastName ||
+            "",
+          tenantId: state.clientDetails.currentTenant.id,
+        };
+        dispatch(
+          createClient(client, (client: Client) => {
+            if (client.id) {
+              const clientDetails: ClientDetails = {
+                clientId: client.id,
+                organizationName:
+                  state.clientDetails?.basicDetails?.formData.organization ||
+                  "",
+                organizationWebsite:
+                  state.clientDetails?.basicDetails?.formData
+                    .organizationWebsite || "",
+                location:
+                  state.clientDetails?.basicDetails?.formData.location || "",
+                facebook:
+                  state.clientDetails?.socialMediaDetails?.formData
+                    .facebookUrl || "",
+                twitter:
+                  state.clientDetails?.socialMediaDetails?.formData
+                    .twitterUrl || "",
+                linkedin:
+                  state.clientDetails?.socialMediaDetails?.formData
+                    .linkedinUrl || "",
+                instagram:
+                  state.clientDetails?.socialMediaDetails?.formData
+                    .instagramUrl || "",
+                pinterest:
+                  state.clientDetails?.socialMediaDetails?.formData
+                    .pinterestUrl || "",
+                tiktok:
+                  state.clientDetails?.socialMediaDetails?.formData.tiktokUrl ||
+                  "",
+                monthlyBudget:
+                  state.clientDetails?.contentSpecs?.formData.monthlyBudget ||
+                  0,
+                revenue:
+                  state.clientDetails?.contentSpecs?.formData.revenue || 0,
+                projectScope:
+                  state.clientDetails?.projectScope?.formData.projectScope ||
+                  "",
+                shortTermGoals:
+                  state.clientDetails?.projectScope?.formData.shortTermGoals ||
+                  "",
+                targetAudience:
+                  state.clientDetails?.projectScope?.formData.targetAudience ||
+                  "",
+                brandGuidelines:
+                  state.clientDetails?.contentSpecs?.formData.brandGuidelines ||
+                  "",
+                communicationPref:
+                  state.clientDetails?.contentSpecs?.formData
+                    .communicationPref || "",
+                targetLocations:
+                  state.clientDetails?.projectScope?.formData.targetLocations ||
+                  "",
+                topCompetitors:
+                  state.clientDetails?.projectScope?.formData.topCompetitors ||
+                  "",
+              };
+              dispatch(
+                createClientDetails(clientDetails, () => {
+                  dispatch(setClientDetailsStatus(ProcessStatus.Complete));
+                })
+              );
+            }
+          })
+        );
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(clientDetailsSlice.actions.setIsSubmitting(false));
     }
   };

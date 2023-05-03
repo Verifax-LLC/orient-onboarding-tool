@@ -51,7 +51,7 @@ const PreparationView: React.FC<PreparationViewProps> = (
           &#x2714;
         </div>
         <p className="text-sm font-medium inline-flex ml-1">
-          You have a valid payment method{" "}
+          You have supporting documents (style guide, etc.)
         </p>
       </div>
       <OnboardingFooter

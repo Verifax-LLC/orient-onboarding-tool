@@ -2,6 +2,7 @@ import {
   setBasicDetails,
   setClientDetailsStatus,
   setContentSpecs,
+  setProjectScope,
   setSocialMediaDetails,
 } from "../common/client-details/client-details.thunks";
 import { ProcessStatus } from "../common/models/process.enums";
@@ -14,9 +15,13 @@ import ContentSpecsView, {
   ContentSpecsFormData,
 } from "../features/onboarding-workflow/views/ContentSpecsView";
 import PreparationView from "../features/onboarding-workflow/views/PreparationView";
+import ProjectScopeView, {
+  ProjectScopeFormData,
+} from "../features/onboarding-workflow/views/ProjectScopeView";
 import SocialMediaView, {
   SocialMediaDetailsFormData,
 } from "../features/onboarding-workflow/views/SocialMediaView";
+import SubmissionConfirmation from "../features/onboarding-workflow/views/SubmissionConfirmation";
 
 const OnboardingView: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -28,6 +33,10 @@ const OnboardingView: React.FC = () => {
 
   const handlePassedSocialMedia = (values: SocialMediaDetailsFormData) => {
     dispatch(setSocialMediaDetails(values));
+  };
+
+  const handlePassedProjectScope = (values: ProjectScopeFormData) => {
+    dispatch(setProjectScope(values));
   };
 
   const handlePassedContentSpecs = (values: ContentSpecsFormData) => {
@@ -64,6 +73,16 @@ const OnboardingView: React.FC = () => {
     );
   }
 
+  if (formStatus === ProcessStatus.ProjectScope) {
+    return (
+      <ProjectScopeView
+        onClick={(values: ProjectScopeFormData) =>
+          handlePassedProjectScope(values)
+        }
+      />
+    );
+  }
+
   if (formStatus === ProcessStatus.ContentSpecs) {
     return (
       <ContentSpecsView
@@ -74,7 +93,7 @@ const OnboardingView: React.FC = () => {
     );
   }
 
-  return <div>Onboarding complete</div>;
+  return <SubmissionConfirmation />;
 };
 
 export default OnboardingView;

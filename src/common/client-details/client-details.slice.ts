@@ -5,30 +5,38 @@ import {
   BasicDetailsState,
   ContentSpecsState,
   PaymentDetailsState,
+  ProjectScopeState,
   SocialMediaDetailsState,
 } from "../models/process.models";
+import { Tenant } from "../tenant/tenant.models";
 
 // State
 interface ClientDetailsState {
   currentClient?: Client;
+  currentTenant?: Tenant;
   createdClientDetails?: ClientDetails;
   status: ProcessStatus;
   basicDetails?: BasicDetailsState;
   socialMediaDetails?: SocialMediaDetailsState;
+  projectScope?: ProjectScopeState;
   contentSpecs?: ContentSpecsState;
   paymentDetails?: PaymentDetailsState;
   fileUploadDialogOpen: boolean;
+  isSubmitting: boolean;
 }
 
 const initialState: ClientDetailsState = {
   currentClient: undefined,
+  currentTenant: undefined,
   createdClientDetails: undefined,
-  status: ProcessStatus.ContentSpecs,
+  status: ProcessStatus.Review,
   basicDetails: undefined,
   socialMediaDetails: undefined,
+  projectScope: undefined,
   contentSpecs: undefined,
   paymentDetails: undefined,
   fileUploadDialogOpen: false,
+  isSubmitting: false,
 };
 
 // Reducers
@@ -38,6 +46,9 @@ export const clientDetailsSlice = createSlice({
   reducers: {
     setClient: (state: ClientDetailsState, action: PayloadAction<Client>) => {
       state.currentClient = action.payload;
+    },
+    setTenant: (state: ClientDetailsState, action: PayloadAction<Tenant>) => {
+      state.currentTenant = action.payload;
     },
     setCreatedClientDetails: (
       state: ClientDetailsState,
@@ -63,6 +74,12 @@ export const clientDetailsSlice = createSlice({
     ) => {
       state.socialMediaDetails = action.payload;
     },
+    setProjectScope: (
+      state: ClientDetailsState,
+      action: PayloadAction<ProjectScopeState>
+    ) => {
+      state.projectScope = action.payload;
+    },
     setContentSpecs: (
       state: ClientDetailsState,
       action: PayloadAction<ContentSpecsState>
@@ -86,6 +103,12 @@ export const clientDetailsSlice = createSlice({
       action: PayloadAction<boolean>
     ) => {
       state.contentSpecs = { formData: { hasUploadedFiles: action.payload } };
+    },
+    setIsSubmitting: (
+      state: ClientDetailsState,
+      action: PayloadAction<boolean>
+    ) => {
+      state.isSubmitting = action.payload;
     },
   },
 });
