@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import {
   setBasicDetails,
   setClientDetailsStatus,
   setContentSpecs,
   setProjectScope,
   setSocialMediaDetails,
+  submitAllDetails,
 } from "../common/client-details/client-details.thunks";
 import { ProcessStatus } from "../common/models/process.enums";
 import { useAppDispatch, useAppSelector } from "../common/store/hooks";
@@ -26,6 +28,12 @@ import SubmissionConfirmation from "../features/onboarding-workflow/views/Submis
 const OnboardingView: React.FC = () => {
   const dispatch = useAppDispatch();
   const formStatus = useAppSelector((s: RootState) => s.clientDetails.status);
+
+  useEffect(() => {
+    if (formStatus === ProcessStatus.Review) {
+      dispatch(submitAllDetails());
+    }
+  }, [formStatus]);
 
   const handlePassedBasicDetails = (values: BasicDetailsFormData) => {
     dispatch(setBasicDetails(values));

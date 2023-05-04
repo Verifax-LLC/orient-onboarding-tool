@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { Client, ClientDetails } from "../models/client-details.models";
+import { Client, ClientDetails } from "./client-details.models";
 
 export class ClientService {
   private readonly _axios: AxiosInstance;

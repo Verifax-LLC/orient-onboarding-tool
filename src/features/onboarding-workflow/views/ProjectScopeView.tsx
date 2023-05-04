@@ -14,11 +14,11 @@ interface ProjectScopeViewProps {
 }
 
 export interface ProjectScopeFormData {
-  projectScope?: string;
-  shortTermGoals?: string;
-  targetAudience?: string;
-  targetLocations?: string;
-  topCompetitors?: string;
+  projectScope: string;
+  shortTermGoals: string;
+  targetAudience: string;
+  targetLocations: string;
+  topCompetitors: string;
 }
 
 const validationSchema = Yup.object().shape({
@@ -37,7 +37,13 @@ const ProjectScopeView: React.FC<ProjectScopeViewProps> = (
     (s: RootState) => s.clientDetails.projectScope?.formData
   );
 
-  const initialValues: ProjectScopeFormData = {};
+  const initialValues: ProjectScopeFormData = {
+    projectScope: projectScopeValues?.projectScope ?? "",
+    shortTermGoals: projectScopeValues?.shortTermGoals ?? "",
+    targetAudience: projectScopeValues?.targetAudience ?? "",
+    targetLocations: projectScopeValues?.targetLocations ?? "",
+    topCompetitors: projectScopeValues?.topCompetitors ?? "",
+  };
 
   const handleBackClick = () => {
     dispatch(setClientDetailsStatus(ProcessStatus.SocialMediaDetails));

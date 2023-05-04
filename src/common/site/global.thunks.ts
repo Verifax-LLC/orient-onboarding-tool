@@ -12,5 +12,10 @@ export const setNetworkError =
         cause: error,
       });
     }
-    dispatch(globalSlice.actions.setNetworkError(isNetworkError));
+    dispatch(
+      globalSlice.actions.setNetworkError({
+        networkError: isNetworkError,
+        networkErrorMessage: error?.message,
+      })
+    );
   };

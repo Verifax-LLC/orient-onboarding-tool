@@ -2,9 +2,11 @@ import { AnyAction, applyMiddleware, configureStore } from "@reduxjs/toolkit";
 
 import thunkMiddleware, { ThunkAction } from "redux-thunk";
 import { clientDetailsSlice } from "../client-details/client-details.slice";
+import { tenantDetailsSlice } from "../tenant-details/tenant-details.slice";
 
 export const rootReducer = {
   clientDetails: clientDetailsSlice.reducer,
+  tenantDetails: tenantDetailsSlice.reducer,
 };
 
 export const store = configureStore({

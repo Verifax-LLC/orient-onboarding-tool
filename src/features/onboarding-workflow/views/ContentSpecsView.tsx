@@ -19,12 +19,12 @@ interface ContentSpecsViewProps {
 }
 
 export interface ContentSpecsFormData {
-  brandGuidelines?: string;
-  communicationPref?: string;
-  monthlyBudget?: number;
-  revenue?: number;
-  additionalComments?: string;
-  hasUploadedFiles?: boolean;
+  brandGuidelines: string;
+  communicationPref: string;
+  monthlyBudget: number;
+  revenue: number;
+  additionalComments: string;
+  hasUploadedFiles: boolean;
 }
 
 const validationSchema = Yup.object().shape({
@@ -56,6 +56,7 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
     revenue: contentSpecsValues?.revenue ?? 0,
     monthlyBudget: contentSpecsValues?.monthlyBudget ?? 0,
     additionalComments: contentSpecsValues?.additionalComments ?? "",
+    hasUploadedFiles: contentSpecsValues.hasUploadedFiles ?? false,
   };
 
   const handleBackClick = () => {

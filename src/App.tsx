@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { NumberParam, useQueryParam } from "use-query-params";
+import { StringParam, useQueryParam } from "use-query-params";
 import "./App.css";
 import { useAppDispatch } from "./common/store/hooks";
-import { setTenant } from "./common/tenant/tenant.thunks";
+import { setTenant } from "./common/tenant-details/tenant-details.thunks";
 import FileUploadDialog from "./features/onboarding-workflow/components/FileUploadDialog";
 import Footer from "./features/site/components/Footer";
 import NavigationBar from "./features/site/components/NavigationBar";
@@ -10,13 +10,13 @@ import OnboardingView from "./pages/Onboarding";
 
 function App() {
   const dispatch = useAppDispatch();
-  const [tenantId, setTenantId] = useQueryParam("x", NumberParam);
+  const [link] = useQueryParam("q", StringParam);
 
   useEffect(() => {
-    if (tenantId) {
-      dispatch(setTenant(tenantId));
+    if (link) {
+      dispatch(setTenant(link));
     }
-  }, [tenantId]);
+  }, [link]);
 
   return (
     <div data-theme="verifax" className="flex flex-col justify-start h-screen">

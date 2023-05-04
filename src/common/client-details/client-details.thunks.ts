@@ -2,11 +2,11 @@ import { BasicDetailsFormData } from "../../features/onboarding-workflow/views/B
 import { ContentSpecsFormData } from "../../features/onboarding-workflow/views/ContentSpecsView";
 import { ProjectScopeFormData } from "../../features/onboarding-workflow/views/ProjectScopeView";
 import { SocialMediaDetailsFormData } from "../../features/onboarding-workflow/views/SocialMediaView";
-import { Client, ClientDetails } from "../models/client-details.models";
 import { ProcessStatus } from "../models/process.enums";
 import apiClient from "../site/axios-instance";
 import { setNetworkError } from "../site/global.thunks";
 import { AppDispatch, AppThunk, RootState } from "../store/store";
+import { Client, ClientDetails } from "./client-details.models";
 import { ClientService } from "./client-details.service";
 import { clientDetailsSlice } from "./client-details.slice";
 
@@ -120,21 +120,16 @@ export const createClientDetails =
 export const submitAllDetails =
   (): AppThunk => async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
-      dispatch(clientDetailsSlice.actions.setIsSubmitting(true));
       dispatch(setClientDetailsStatus(ProcessStatus.Review));
       const state = getState();
-      if (state.clientDetails.currentTenant?.id) {
+      if (state.tenantDetails.tenant?.id) {
         const client: Client = {
-          firstName:
-            state.clientDetails?.basicDetails?.formData.firstName || "",
-          lastName: state.clientDetails?.basicDetails?.formData.lastName || "",
-          phone: state.clientDetails?.basicDetails?.formData.phoneNumber || "",
-          primaryEmail: state.clientDetails?.basicDetails?.formData.email || "",
-          name:
-            state.clientDetails?.basicDetails?.formData.firstName ||
-            "" + " " + state.clientDetails?.basicDetails?.formData.lastName ||
-            "",
-          tenantId: state.clientDetails.currentTenant.id,
+          firstName: state.clientDetails?.basicDetails?.formData.firstName,
+          lastName: state.clientDetails?.basicDetails?.formData.lastName,
+          phone: state.clientDetails?.basicDetails?.formData.phoneNumber,
+          primaryEmail: state.clientDetails?.basicDetails?.formData.email,
+          name: state.clientDetails?.basicDetails?.formData.organization,
+          tenantId: state.tenantDetails.tenant.id,
         };
         dispatch(
           createClient(client, (client: Client) => {
@@ -142,57 +137,39 @@ export const submitAllDetails =
               const clientDetails: ClientDetails = {
                 clientId: client.id,
                 organizationName:
-                  state.clientDetails?.basicDetails?.formData.organization ||
-                  "",
+                  state.clientDetails.basicDetails.formData.organization,
                 organizationWebsite:
-                  state.clientDetails?.basicDetails?.formData
-                    .organizationWebsite || "",
-                location:
-                  state.clientDetails?.basicDetails?.formData.location || "",
+                  state.clientDetails.basicDetails.formData.organizationWebsite,
+                location: state.clientDetails.basicDetails.formData.location,
                 facebook:
-                  state.clientDetails?.socialMediaDetails?.formData
-                    .facebookUrl || "",
+                  state.clientDetails.socialMediaDetails.formData.facebookUrl,
                 twitter:
-                  state.clientDetails?.socialMediaDetails?.formData
-                    .twitterUrl || "",
+                  state.clientDetails.socialMediaDetails.formData.twitterUrl,
                 linkedin:
-                  state.clientDetails?.socialMediaDetails?.formData
-                    .linkedinUrl || "",
+                  state.clientDetails.socialMediaDetails.formData.linkedinUrl,
                 instagram:
-                  state.clientDetails?.socialMediaDetails?.formData
-                    .instagramUrl || "",
+                  state.clientDetails.socialMediaDetails.formData.instagramUrl,
                 pinterest:
-                  state.clientDetails?.socialMediaDetails?.formData
-                    .pinterestUrl || "",
+                  state.clientDetails.socialMediaDetails.formData.pinterestUrl,
                 tiktok:
-                  state.clientDetails?.socialMediaDetails?.formData.tiktokUrl ||
-                  "",
+                  state.clientDetails.socialMediaDetails.formData.tiktokUrl,
                 monthlyBudget:
-                  state.clientDetails?.contentSpecs?.formData.monthlyBudget ||
-                  0,
-                revenue:
-                  state.clientDetails?.contentSpecs?.formData.revenue || 0,
+                  state.clientDetails.contentSpecs.formData.monthlyBudget,
+                revenue: state.clientDetails.contentSpecs.formData.revenue,
                 projectScope:
-                  state.clientDetails?.projectScope?.formData.projectScope ||
-                  "",
+                  state.clientDetails.projectScope.formData.projectScope,
                 shortTermGoals:
-                  state.clientDetails?.projectScope?.formData.shortTermGoals ||
-                  "",
+                  state.clientDetails.projectScope.formData.shortTermGoals,
                 targetAudience:
-                  state.clientDetails?.projectScope?.formData.targetAudience ||
-                  "",
+                  state.clientDetails.projectScope.formData.targetAudience,
                 brandGuidelines:
-                  state.clientDetails?.contentSpecs?.formData.brandGuidelines ||
-                  "",
+                  state.clientDetails.contentSpecs.formData.brandGuidelines,
                 communicationPref:
-                  state.clientDetails?.contentSpecs?.formData
-                    .communicationPref || "",
+                  state.clientDetails.contentSpecs.formData.communicationPref,
                 targetLocations:
-                  state.clientDetails?.projectScope?.formData.targetLocations ||
-                  "",
+                  state.clientDetails.projectScope.formData.targetLocations,
                 topCompetitors:
-                  state.clientDetails?.projectScope?.formData.topCompetitors ||
-                  "",
+                  state.clientDetails.projectScope.formData.topCompetitors,
               };
               dispatch(
                 createClientDetails(clientDetails, () => {
@@ -206,6 +183,5 @@ export const submitAllDetails =
     } catch (error) {
       console.log(error);
     } finally {
-      dispatch(clientDetailsSlice.actions.setIsSubmitting(false));
     }
   };

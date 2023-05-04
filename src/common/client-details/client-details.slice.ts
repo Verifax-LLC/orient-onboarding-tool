@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Client, ClientDetails } from "../models/client-details.models";
 import { ProcessStatus } from "../models/process.enums";
 import {
   BasicDetailsState,
@@ -8,35 +7,38 @@ import {
   ProjectScopeState,
   SocialMediaDetailsState,
 } from "../models/process.models";
-import { Tenant } from "../tenant/tenant.models";
+import {
+  basicDetailsInitialValues,
+  Client,
+  ClientDetails,
+  contentSpecsInitialValues,
+  projectScopeInitialValues,
+  socialMediaInitialValues,
+} from "./client-details.models";
 
 // State
 interface ClientDetailsState {
-  currentClient?: Client;
-  currentTenant?: Tenant;
-  createdClientDetails?: ClientDetails;
+  currentClient: Client;
+  createdClientDetails: ClientDetails;
   status: ProcessStatus;
-  basicDetails?: BasicDetailsState;
-  socialMediaDetails?: SocialMediaDetailsState;
-  projectScope?: ProjectScopeState;
-  contentSpecs?: ContentSpecsState;
-  paymentDetails?: PaymentDetailsState;
+  basicDetails: BasicDetailsState;
+  socialMediaDetails: SocialMediaDetailsState;
+  projectScope: ProjectScopeState;
+  contentSpecs: ContentSpecsState;
+  paymentDetails: PaymentDetailsState;
   fileUploadDialogOpen: boolean;
-  isSubmitting: boolean;
 }
 
 const initialState: ClientDetailsState = {
-  currentClient: undefined,
-  currentTenant: undefined,
-  createdClientDetails: undefined,
-  status: ProcessStatus.Review,
-  basicDetails: undefined,
-  socialMediaDetails: undefined,
-  projectScope: undefined,
-  contentSpecs: undefined,
-  paymentDetails: undefined,
+  currentClient: {} as Client,
+  createdClientDetails: {} as ClientDetails,
+  status: ProcessStatus.Preparation,
+  basicDetails: { formData: basicDetailsInitialValues },
+  socialMediaDetails: { formData: socialMediaInitialValues },
+  projectScope: { formData: projectScopeInitialValues },
+  contentSpecs: { formData: contentSpecsInitialValues },
+  paymentDetails: {},
   fileUploadDialogOpen: false,
-  isSubmitting: false,
 };
 
 // Reducers
@@ -46,9 +48,6 @@ export const clientDetailsSlice = createSlice({
   reducers: {
     setClient: (state: ClientDetailsState, action: PayloadAction<Client>) => {
       state.currentClient = action.payload;
-    },
-    setTenant: (state: ClientDetailsState, action: PayloadAction<Tenant>) => {
-      state.currentTenant = action.payload;
     },
     setCreatedClientDetails: (
       state: ClientDetailsState,
@@ -102,13 +101,7 @@ export const clientDetailsSlice = createSlice({
       state: ClientDetailsState,
       action: PayloadAction<boolean>
     ) => {
-      state.contentSpecs = { formData: { hasUploadedFiles: action.payload } };
-    },
-    setIsSubmitting: (
-      state: ClientDetailsState,
-      action: PayloadAction<boolean>
-    ) => {
-      state.isSubmitting = action.payload;
+      state.contentSpecs.formData.hasUploadedFiles = action.payload;
     },
   },
 });
