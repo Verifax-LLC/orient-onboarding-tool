@@ -1,0 +1,12 @@
+.select {
+    width: 100%;
+  }
+  
+  .select-error {
+    border-color: #e53e3e;
+  }
+  
+  .text-error {
+    color: #e53e3e;
+  }
+  
