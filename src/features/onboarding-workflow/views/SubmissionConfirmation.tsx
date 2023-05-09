@@ -1,8 +1,8 @@
-import { Triangle } from "react-loader-spinner";
 import { ProcessStatus } from "../../../common/models/process.enums";
 import { useAppSelector } from "../../../common/store/hooks";
 import { RootState } from "../../../common/store/store";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
+import DataFetchingPlaceholder from "../components/DataFetchingPlaceholder";
 
 const SubmissionConfirmation = () => {
   const status = useAppSelector((s: RootState) => s.clientDetails.status);
@@ -15,18 +15,7 @@ const SubmissionConfirmation = () => {
             : "Submission complete!"}
         </p>
         {status !== ProcessStatus.Complete ? (
-          <>
-            <Triangle
-              height="240"
-              width="240"
-              color="#7F56D9"
-              ariaLabel="triangle-loading"
-              visible={true}
-            />
-            <p className="text-xs font-medium mt-4 text-secondary">
-              This should only take a few seconds
-            </p>
-          </>
+          <DataFetchingPlaceholder />
         ) : (
           <div className="flex flex-col gap-10 items-center">
             <p className="text-sm font-medium">

@@ -1,7 +1,9 @@
 import React, { ReactNode } from "react";
+import { Rings } from "react-loader-spinner";
 
 interface VDialogProps {
   open: boolean;
+  buttonText?: string;
   isLoading?: boolean;
   title: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -23,8 +25,25 @@ const VDialog: React.FC<VDialogProps> = (props: VDialogProps) => {
           <h2 className="text-xl font-semibold">{props.title}</h2>
           <div className="p-4">{props.children}</div>
           <div className="modal-action">
-            <button onClick={handleDoneClick} className="btn btn-primary">
-              <p className="text-base-100">Done</p>
+            <button
+              onClick={handleDoneClick}
+              disabled={props.isLoading}
+              className="btn btn-primary items-center"
+            >
+              {props.isLoading ? (
+                <Rings
+                  height={40}
+                  width={40}
+                  color="#7F56D9"
+                  radius="6"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                  ariaLabel="rings-loading"
+                />
+              ) : (
+                <p className="text-base-100">{props.buttonText ?? "Done"}</p>
+              )}
             </button>
           </div>
         </div>

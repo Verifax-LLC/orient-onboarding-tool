@@ -12,6 +12,8 @@ import {
   Client,
   ClientDetails,
   contentSpecsInitialValues,
+  LinkVerificationStatus,
+  OnboardingLink,
   projectScopeInitialValues,
   socialMediaInitialValues,
 } from "./client-details.models";
@@ -21,6 +23,8 @@ interface ClientDetailsState {
   currentClient: Client;
   createdClientDetails: ClientDetails;
   status: ProcessStatus;
+  linkVerificationState: LinkVerificationStatus;
+  onboardingLink: OnboardingLink;
   basicDetails: BasicDetailsState;
   socialMediaDetails: SocialMediaDetailsState;
   projectScope: ProjectScopeState;
@@ -32,6 +36,8 @@ interface ClientDetailsState {
 const initialState: ClientDetailsState = {
   currentClient: {} as Client,
   createdClientDetails: {} as ClientDetails,
+  linkVerificationState: LinkVerificationStatus.PENDING,
+  onboardingLink: {} as OnboardingLink,
   status: ProcessStatus.Preparation,
   basicDetails: { formData: basicDetailsInitialValues },
   socialMediaDetails: { formData: socialMediaInitialValues },
@@ -60,6 +66,18 @@ export const clientDetailsSlice = createSlice({
       action: PayloadAction<ProcessStatus>
     ) => {
       state.status = action.payload;
+    },
+    setLinkVerificationState: (
+      state: ClientDetailsState,
+      action: PayloadAction<LinkVerificationStatus>
+    ) => {
+      state.linkVerificationState = action.payload;
+    },
+    setOnboardingLink: (
+      state: ClientDetailsState,
+      action: PayloadAction<OnboardingLink>
+    ) => {
+      state.onboardingLink = action.payload;
     },
     setBasicDetails: (
       state: ClientDetailsState,
