@@ -5,7 +5,10 @@ import {
   LinkVerificationStatus,
   OnboardingLinkRequest,
 } from "./common/client-details/client-details.models";
-import { fetchOnboardingLink } from "./common/client-details/client-details.thunks";
+import {
+  fetchOnboardingLink,
+  setLinkVerificationState,
+} from "./common/client-details/client-details.thunks";
 import { useAppDispatch, useAppSelector } from "./common/store/hooks";
 import { RootState } from "./common/store/store";
 import DataFetchingPlaceholder from "./features/onboarding-workflow/components/DataFetchingPlaceholder";
@@ -29,6 +32,8 @@ function App() {
         link: link,
       };
       dispatch(fetchOnboardingLink(linkRequest));
+    } else {
+      dispatch(setLinkVerificationState(LinkVerificationStatus.FAILED));
     }
   }, [link]);
 

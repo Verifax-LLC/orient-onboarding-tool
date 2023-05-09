@@ -24,6 +24,13 @@ export const setClientDetailsStatus =
     dispatch(clientDetailsSlice.actions.setStatus(status));
   };
 
+//set link verification state
+export const setLinkVerificationState =
+  (status: LinkVerificationStatus): AppThunk =>
+  async (dispatch: AppDispatch) => {
+    dispatch(clientDetailsSlice.actions.setLinkVerificationState(status));
+  };
+
 export const fetchOnboardingLink =
   (onboardingLinkRequest: OnboardingLinkRequest): AppThunk =>
   async (dispatch: AppDispatch) => {

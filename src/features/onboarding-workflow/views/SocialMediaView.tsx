@@ -23,27 +23,27 @@ export interface SocialMediaDetailsFormData {
 
 const validationSchema = Yup.object().shape({
   facebookUrl: Yup.string().matches(
-    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
     "Please enter a valid website"
   ),
   linkedinUrl: Yup.string().matches(
-    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
     "Please enter a valid website"
   ),
   instagramUrl: Yup.string().matches(
-    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
     "Please enter a valid website"
   ),
   twitterUrl: Yup.string().matches(
-    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
     "Please enter a valid website"
   ),
   pinterestUrl: Yup.string().matches(
-    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
     "Please enter a valid website"
   ),
   tiktokUrl: Yup.string().matches(
-    /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+    /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
     "Please enter a valid website"
   ),
 });
@@ -153,7 +153,7 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
             />
             <VInput
               label="Twitter URL"
-              placeholder="twitter.com/your-handle"
+              placeholder="www.twitter.com/your-page"
               type="text"
               name="twitterUrl"
               adornment="https://"
@@ -183,7 +183,7 @@ const SocialMediaView: React.FC<SocialMediaViewProps> = (
             />
             <VInput
               label="TikTok URL"
-              placeholder="www.tiktok.com/@your-handle"
+              placeholder="www.tiktok.com/your-page"
               type="text"
               name="tiktokUrl"
               adornment="https://"

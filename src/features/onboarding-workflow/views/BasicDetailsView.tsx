@@ -36,7 +36,7 @@ const validationSchema = Yup.object().shape({
   organization: Yup.string().required("Organization is required"),
   organizationWebsite: Yup.string()
     .matches(
-      /^(?!https?:\/\/)[\w.-]+\.[a-z]{2,}$/i,
+      /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
       "Please enter a valid website"
     )
     .required("Website is required"),

@@ -1,4 +1,6 @@
 import React from "react";
+import { useAppSelector } from "../../../common/store/hooks";
+import { RootState } from "../../../common/store/store";
 import VGridContainer from "../../../ui/grid-container/VGridContainer";
 import OnboardingFooter from "../components/OnboardingFooter";
 
@@ -9,12 +11,15 @@ interface PreparationViewProps {
 const PreparationView: React.FC<PreparationViewProps> = (
   props: PreparationViewProps
 ) => {
+  const tenant = useAppSelector((s: RootState) => s.tenantDetails.tenant);
   return (
     <VGridContainer>
       <p className="text-3xl font-medium">Get onboarded fast</p>
-      <p className="text-sm font-medium">
-        Company name would like to get you onboarded
-      </p>
+      {tenant?.name && (
+        <p className="text-sm font-medium">
+          {tenant.name} would like to get you onboarded
+        </p>
+      )}
       <div className="mx-auto">
         <img src={"/onboard.png"} />
       </div>
