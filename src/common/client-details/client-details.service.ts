@@ -1,5 +1,10 @@
 import { AxiosInstance } from "axios";
-import { Client, ClientDetails } from "./client-details.models";
+import {
+  Client,
+  ClientDetails,
+  OnboardingLink,
+  OnboardingLinkRequest,
+} from "./client-details.models";
 
 export class ClientService {
   private readonly _axios: AxiosInstance;
@@ -19,6 +24,16 @@ export class ClientService {
     const response = await this._axios.post<ClientDetails>(
       "/ClientDetails",
       client
+    );
+    return response.data;
+  }
+
+  public async getOnboardingLink(
+    onboardingRequest: OnboardingLinkRequest
+  ): Promise<OnboardingLink> {
+    const response = await this._axios.post<OnboardingLink>(
+      "/OnboardingLink",
+      onboardingRequest
     );
     return response.data;
   }

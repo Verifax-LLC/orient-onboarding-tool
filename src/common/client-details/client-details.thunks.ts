@@ -6,7 +6,13 @@ import { ProcessStatus } from "../models/process.enums";
 import apiClient from "../site/axios-instance";
 import { setNetworkError } from "../site/global.thunks";
 import { AppDispatch, AppThunk, RootState } from "../store/store";
-import { Client, ClientDetails } from "./client-details.models";
+import { setTenant } from "../tenant-details/tenant-details.thunks";
+import {
+  Client,
+  ClientDetails,
+  LinkVerificationStatus,
+  OnboardingLinkRequest,
+} from "./client-details.models";
 import { ClientService } from "./client-details.service";
 import { clientDetailsSlice } from "./client-details.slice";
 
@@ -16,6 +22,39 @@ export const setClientDetailsStatus =
   (status: ProcessStatus): AppThunk =>
   async (dispatch: AppDispatch) => {
     dispatch(clientDetailsSlice.actions.setStatus(status));
+  };
+
+//set link verification state
+export const setLinkVerificationState =
+  (status: LinkVerificationStatus): AppThunk =>
+  async (dispatch: AppDispatch) => {
+    dispatch(clientDetailsSlice.actions.setLinkVerificationState(status));
+  };
+
+export const fetchOnboardingLink =
+  (onboardingLinkRequest: OnboardingLinkRequest): AppThunk =>
+  async (dispatch: AppDispatch) => {
+    try {
+      const onboardingLink = await clientService.getOnboardingLink({
+        link: onboardingLinkRequest.link,
+      });
+      if (onboardingLink) {
+        dispatch(
+          clientDetailsSlice.actions.setLinkVerificationState(
+            LinkVerificationStatus.SUCCESS
+          )
+        );
+        dispatch(clientDetailsSlice.actions.setOnboardingLink(onboardingLink));
+        dispatch(setTenant(onboardingLink.link));
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(
+        clientDetailsSlice.actions.setLinkVerificationState(
+          LinkVerificationStatus.FAILED
+        )
+      );
+    }
   };
 
 //set basic details
@@ -61,14 +100,14 @@ export const setProjectScope =
 
 //set content specs
 export const setContentSpecs =
-  (contentSpecs: ContentSpecsFormData): AppThunk =>
+  (contentSpecs: ContentSpecsFormData, submit?: boolean): AppThunk =>
   async (dispatch: AppDispatch) => {
     dispatch(
       clientDetailsSlice.actions.setContentSpecs({
         formData: contentSpecs,
       })
     );
-    dispatch(setClientDetailsStatus(ProcessStatus.Review));
+    if (submit) dispatch(setClientDetailsStatus(ProcessStatus.Review));
   };
 
 //set file dialog open
@@ -96,31 +135,26 @@ export const createClient =
 
 //create client details
 export const createClientDetails =
-  (clientDetails: ClientDetails, onSuccess?: () => void): AppThunk =>
+  (clientDetails: ClientDetails): AppThunk =>
   async (dispatch: AppDispatch) => {
     try {
-      const clientDetailsResponse: ClientDetails =
-        await clientService.createClientDetails(clientDetails);
-
-      if (clientDetailsResponse.clientId) {
-        dispatch(
-          clientDetailsSlice.actions.setCreatedClientDetails(
-            clientDetailsResponse
-          )
-        );
-        onSuccess?.();
-      } else {
-        setNetworkError(true, new Error("Client not created"));
-      }
+      await clientService
+        .createClientDetails(clientDetails)
+        .then(() => {
+          dispatch(setClientDetailsStatus(ProcessStatus.Complete));
+        })
+        .catch((error: Error) => {
+          setNetworkError(true, error);
+        });
     } catch (error) {
       setNetworkError(true, new Error(error as string));
     }
   };
 
 export const submitAllDetails =
-  (): AppThunk => async (dispatch: AppDispatch, getState: () => RootState) => {
+  (link: string): AppThunk =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
-      dispatch(setClientDetailsStatus(ProcessStatus.Review));
       const state = getState();
       if (state.tenantDetails.tenant?.id) {
         const client: Client = {
@@ -170,12 +204,9 @@ export const submitAllDetails =
                   state.clientDetails.projectScope.formData.targetLocations,
                 topCompetitors:
                   state.clientDetails.projectScope.formData.topCompetitors,
+                link_id: link,
               };
-              dispatch(
-                createClientDetails(clientDetails, () => {
-                  dispatch(setClientDetailsStatus(ProcessStatus.Complete));
-                })
-              );
+              dispatch(createClientDetails(clientDetails));
             }
           })
         );

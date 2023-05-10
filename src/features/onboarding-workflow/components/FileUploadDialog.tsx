@@ -15,9 +15,8 @@ const FileUploadDialog = () => {
   const open = useAppSelector(
     (s: RootState) => s.clientDetails.fileUploadDialogOpen
   );
-  const contentSpecsVals = useAppSelector(
-    (s: RootState) => s.clientDetails.contentSpecs
-  );
+
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const [fileListItems, setFileListItems] = React.useState<File[]>([]);
 
@@ -27,7 +26,7 @@ const FileUploadDialog = () => {
 
   const uploadFiles = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       if (fileListItems.length === 0) return;
       const formData = new FormData();
@@ -51,12 +50,19 @@ const FileUploadDialog = () => {
     } catch (error) {
       console.error(error);
     } finally {
+      setIsLoading(false);
       dispatch(setFileUploadDialogOpen(false));
     }
   };
 
   return (
-    <VDialog open={open} title="File upload" onClick={(e) => uploadFiles(e)}>
+    <VDialog
+      open={open}
+      buttonText="Upload"
+      isLoading={isLoading}
+      title="File upload"
+      onClick={(e) => uploadFiles(e)}
+    >
       <FileUploadZone
         id={"dialogFileZone"}
         name={"dialogFileZone"}

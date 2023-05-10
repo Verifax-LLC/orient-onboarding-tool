@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { StringParam, useQueryParam } from "use-query-params";
 import {
   setBasicDetails,
   setClientDetailsStatus,
@@ -28,13 +29,13 @@ import SubmissionConfirmation from "../features/onboarding-workflow/views/Submis
 const OnboardingView: React.FC = () => {
   const dispatch = useAppDispatch();
   const formStatus = useAppSelector((s: RootState) => s.clientDetails.status);
+  const [link] = useQueryParam("q", StringParam);
 
   useEffect(() => {
     if (formStatus === ProcessStatus.Review) {
-      dispatch(submitAllDetails());
+      if (link) dispatch(submitAllDetails(link));
     }
   }, [formStatus]);
-
   const handlePassedBasicDetails = (values: BasicDetailsFormData) => {
     dispatch(setBasicDetails(values));
   };
@@ -48,7 +49,7 @@ const OnboardingView: React.FC = () => {
   };
 
   const handlePassedContentSpecs = (values: ContentSpecsFormData) => {
-    dispatch(setContentSpecs(values));
+    dispatch(setContentSpecs(values, true));
   };
 
   if (formStatus === ProcessStatus.Preparation) {

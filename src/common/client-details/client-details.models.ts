@@ -43,10 +43,25 @@ export interface ClientDetails {
   communicationPref: string;
   targetLocations: string;
   topCompetitors: string;
+  link_id: string;
 
   // Navigation properties
   documents?: ClientDocument[];
   client?: Client;
+}
+
+export interface OnboardingLinkRequest {
+  link: string;
+}
+
+export interface OnboardingLink {
+  id: number;
+  link: string;
+  createdAt: Date;
+  updatedAt: Date;
+  expiresAt: Date;
+  isActive: boolean;
+  tenantId: number;
 }
 
 export const basicDetailsInitialValues: BasicDetailsFormData = {
@@ -86,3 +101,9 @@ export const contentSpecsInitialValues: ContentSpecsFormData = {
   additionalComments: "",
   hasUploadedFiles: false,
 };
+
+export enum LinkVerificationStatus {
+  PENDING = "PENDING",
+  FAILED = "FAILED",
+  SUCCESS = "SUCCESS",
+}

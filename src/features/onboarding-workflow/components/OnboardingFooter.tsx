@@ -19,7 +19,7 @@ const OnboardingFooter: React.FC<OnboardingFooterProps> = (
       <div className="w-[343px] m-auto">
         <VButton
           type={props.type ?? "button"}
-          text="Continue  &#8680;"
+          text={props.text ?? "Continue  &#8680;"}
           onClick={() => props.onClick?.()}
           disabled={props.disabled}
           classNames={["w-full"]}

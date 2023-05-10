@@ -3,6 +3,7 @@ import React from "react";
 import * as Yup from "yup";
 import {
   setClientDetailsStatus,
+  setContentSpecs,
   setFileUploadDialogOpen,
 } from "../../../common/client-details/client-details.thunks";
 import { ProcessStatus } from "../../../common/models/process.enums";
@@ -59,8 +60,9 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
     hasUploadedFiles: contentSpecsValues.hasUploadedFiles ?? false,
   };
 
-  const handleBackClick = () => {
+  const handleBackClick = (values: ContentSpecsFormData) => {
     dispatch(setClientDetailsStatus(ProcessStatus.ProjectScope));
+    dispatch(setContentSpecs(values));
   };
   const handleSubmit = (
     values: ContentSpecsFormData,
@@ -210,7 +212,7 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
             <OnboardingFooter
               type="submit"
               text={"Submit and finish"}
-              onBackClick={handleBackClick}
+              onBackClick={() => handleBackClick(values)}
             />
           </Form>
         )}
