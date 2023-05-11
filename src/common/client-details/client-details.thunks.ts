@@ -60,10 +60,20 @@ export const fetchOnboardingLink =
 //set basic details
 export const setBasicDetails =
   (basicDetails: BasicDetailsFormData): AppThunk =>
-  async (dispatch: AppDispatch) => {
+  async (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(
       clientDetailsSlice.actions.setBasicDetails({ formData: basicDetails })
     );
+    const tenant = getState().tenantDetails.tenant;
+    const client: Client = {
+      firstName: basicDetails.firstName,
+      lastName: basicDetails.lastName,
+      phone: basicDetails.phoneNumber,
+      primaryEmail: basicDetails.email,
+      name: basicDetails.organization,
+      tenantId: tenant.id,
+    };
+    dispatch(createClient(client));
     dispatch(setClientDetailsStatus(ProcessStatus.SocialMediaDetails));
   };
 
@@ -118,18 +128,17 @@ export const setFileUploadDialogOpen =
   };
 
 export const createClient =
-  (client: Client, onSuccess?: (client: Client) => void): AppThunk =>
+  (client: Client): AppThunk =>
   async (dispatch: AppDispatch) => {
     try {
       const clientResponse: Client = await clientService.createClient(client);
       if (clientResponse.id) {
         dispatch(clientDetailsSlice.actions.setClient(clientResponse));
-        onSuccess?.(clientResponse);
       } else {
         setNetworkError(true, new Error("Client not created"));
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -151,68 +160,48 @@ export const createClientDetails =
     }
   };
 
-export const submitAllDetails =
+export const submitClientDetails =
   (link: string): AppThunk =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       const state = getState();
-      if (state.tenantDetails.tenant?.id) {
-        const client: Client = {
-          firstName: state.clientDetails?.basicDetails?.formData.firstName,
-          lastName: state.clientDetails?.basicDetails?.formData.lastName,
-          phone: state.clientDetails?.basicDetails?.formData.phoneNumber,
-          primaryEmail: state.clientDetails?.basicDetails?.formData.email,
-          name: state.clientDetails?.basicDetails?.formData.organization,
-          tenantId: state.tenantDetails.tenant.id,
+      if (state.clientDetails.currentClient.id) {
+        const clientDetails: ClientDetails = {
+          clientId: state.clientDetails.currentClient.id,
+          organizationName:
+            state.clientDetails.basicDetails.formData.organization,
+          organizationWebsite:
+            state.clientDetails.basicDetails.formData.organizationWebsite,
+          location: state.clientDetails.basicDetails.formData.location,
+          facebook: state.clientDetails.socialMediaDetails.formData.facebookUrl,
+          twitter: state.clientDetails.socialMediaDetails.formData.twitterUrl,
+          linkedin: state.clientDetails.socialMediaDetails.formData.linkedinUrl,
+          instagram:
+            state.clientDetails.socialMediaDetails.formData.instagramUrl,
+          pinterest:
+            state.clientDetails.socialMediaDetails.formData.pinterestUrl,
+          tiktok: state.clientDetails.socialMediaDetails.formData.tiktokUrl,
+          monthlyBudget:
+            state.clientDetails.contentSpecs.formData.monthlyBudget,
+          revenue: state.clientDetails.contentSpecs.formData.revenue,
+          projectScope: state.clientDetails.projectScope.formData.projectScope,
+          shortTermGoals:
+            state.clientDetails.projectScope.formData.shortTermGoals,
+          targetAudience:
+            state.clientDetails.projectScope.formData.targetAudience,
+          brandGuidelines:
+            state.clientDetails.contentSpecs.formData.brandGuidelines,
+          communicationPref:
+            state.clientDetails.contentSpecs.formData.communicationPref,
+          targetLocations:
+            state.clientDetails.projectScope.formData.targetLocations,
+          topCompetitors:
+            state.clientDetails.projectScope.formData.topCompetitors,
+          link_id: link,
         };
-        dispatch(
-          createClient(client, (client: Client) => {
-            if (client.id) {
-              const clientDetails: ClientDetails = {
-                clientId: client.id,
-                organizationName:
-                  state.clientDetails.basicDetails.formData.organization,
-                organizationWebsite:
-                  state.clientDetails.basicDetails.formData.organizationWebsite,
-                location: state.clientDetails.basicDetails.formData.location,
-                facebook:
-                  state.clientDetails.socialMediaDetails.formData.facebookUrl,
-                twitter:
-                  state.clientDetails.socialMediaDetails.formData.twitterUrl,
-                linkedin:
-                  state.clientDetails.socialMediaDetails.formData.linkedinUrl,
-                instagram:
-                  state.clientDetails.socialMediaDetails.formData.instagramUrl,
-                pinterest:
-                  state.clientDetails.socialMediaDetails.formData.pinterestUrl,
-                tiktok:
-                  state.clientDetails.socialMediaDetails.formData.tiktokUrl,
-                monthlyBudget:
-                  state.clientDetails.contentSpecs.formData.monthlyBudget,
-                revenue: state.clientDetails.contentSpecs.formData.revenue,
-                projectScope:
-                  state.clientDetails.projectScope.formData.projectScope,
-                shortTermGoals:
-                  state.clientDetails.projectScope.formData.shortTermGoals,
-                targetAudience:
-                  state.clientDetails.projectScope.formData.targetAudience,
-                brandGuidelines:
-                  state.clientDetails.contentSpecs.formData.brandGuidelines,
-                communicationPref:
-                  state.clientDetails.contentSpecs.formData.communicationPref,
-                targetLocations:
-                  state.clientDetails.projectScope.formData.targetLocations,
-                topCompetitors:
-                  state.clientDetails.projectScope.formData.topCompetitors,
-                link_id: link,
-              };
-              dispatch(createClientDetails(clientDetails));
-            }
-          })
-        );
+        dispatch(createClientDetails(clientDetails));
       }
     } catch (error) {
-      console.log(error);
-    } finally {
+      console.error(error);
     }
   };

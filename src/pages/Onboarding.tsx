@@ -6,7 +6,7 @@ import {
   setContentSpecs,
   setProjectScope,
   setSocialMediaDetails,
-  submitAllDetails,
+  submitClientDetails,
 } from "../common/client-details/client-details.thunks";
 import { ProcessStatus } from "../common/models/process.enums";
 import { useAppDispatch, useAppSelector } from "../common/store/hooks";
@@ -33,7 +33,7 @@ const OnboardingView: React.FC = () => {
 
   useEffect(() => {
     if (formStatus === ProcessStatus.Review) {
-      if (link) dispatch(submitAllDetails(link));
+      if (link) dispatch(submitClientDetails(link));
     }
   }, [formStatus]);
   const handlePassedBasicDetails = (values: BasicDetailsFormData) => {
