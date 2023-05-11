@@ -16,6 +16,11 @@ const FileUploadDialog = () => {
     (s: RootState) => s.clientDetails.fileUploadDialogOpen
   );
 
+  const client = useAppSelector(
+    (s: RootState) => s.clientDetails.currentClient
+  );
+  const tenant = useAppSelector((s: RootState) => s.tenantDetails.tenant);
+
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [fileListItems, setFileListItems] = React.useState<File[]>([]);
@@ -28,10 +33,10 @@ const FileUploadDialog = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      if (fileListItems.length === 0) return;
+      if (fileListItems.length === 0 || !client?.id || !tenant.id) return;
       const formData = new FormData();
-      formData.append("TenantId", "1");
-      formData.append("ClientId", "1");
+      formData.append("TenantId", tenant.id.toString());
+      formData.append("ClientId", client.id.toString());
       fileListItems.forEach((file) => formData.append("files", file));
       const response = await axios.post(
         import.meta.env.VITE_FILE_SERVICE_URL,
