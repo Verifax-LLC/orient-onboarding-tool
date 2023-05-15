@@ -43,6 +43,7 @@ export interface ClientDetails {
   communicationPref: string;
   targetLocations: string;
   topCompetitors: string;
+  additionalInfo: string;
   link_id: string;
 
   // Navigation properties
@@ -98,7 +99,7 @@ export const contentSpecsInitialValues: ContentSpecsFormData = {
   revenue: 0,
   brandGuidelines: "",
   communicationPref: "",
-  additionalComments: "",
+  additionalInfo: "",
   hasUploadedFiles: false,
 };
 

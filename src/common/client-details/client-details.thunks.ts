@@ -197,6 +197,8 @@ export const submitClientDetails =
             state.clientDetails.projectScope.formData.targetLocations,
           topCompetitors:
             state.clientDetails.projectScope.formData.topCompetitors,
+          additionalInfo:
+            state.clientDetails.contentSpecs.formData.additionalInfo,
           link_id: link,
         };
         dispatch(createClientDetails(clientDetails));

@@ -24,7 +24,7 @@ export interface ContentSpecsFormData {
   communicationPref: string;
   monthlyBudget: number;
   revenue: number;
-  additionalComments: string;
+  additionalInfo: string;
   hasUploadedFiles: boolean;
 }
 
@@ -56,7 +56,7 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
     communicationPref: contentSpecsValues?.communicationPref ?? "email",
     revenue: contentSpecsValues?.revenue ?? 0,
     monthlyBudget: contentSpecsValues?.monthlyBudget ?? 0,
-    additionalComments: contentSpecsValues?.additionalComments ?? "",
+    additionalInfo: contentSpecsValues?.additionalInfo ?? "",
     hasUploadedFiles: contentSpecsValues.hasUploadedFiles ?? false,
   };
 
@@ -196,16 +196,16 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
               </>
             )}
             <VInput
-              label="Additional Comments"
+              label="Additional comments"
               type="text"
               name="additionalComments"
               placeholder="Any additional comments..."
-              value={values.additionalComments}
+              value={values.additionalInfo}
               onChange={handleChange}
               onBlur={handleBlur}
               error={
-                errors.additionalComments && touched.additionalComments
-                  ? errors.additionalComments
+                errors.additionalInfo && touched.additionalInfo
+                  ? errors.additionalInfo
                   : undefined
               }
             />
