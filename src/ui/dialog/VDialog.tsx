@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import { Rings } from "react-loader-spinner";
 
 interface VDialogProps {
   open: boolean;
@@ -28,22 +27,13 @@ const VDialog: React.FC<VDialogProps> = (props: VDialogProps) => {
             <button
               onClick={handleDoneClick}
               disabled={props.isLoading}
-              className="btn btn-primary items-center"
+              className={`${
+                props.isLoading
+                  ? "btn btn-primary items-center loading"
+                  : "btn btn-primary items-center"
+              }`}
             >
-              {props.isLoading ? (
-                <Rings
-                  height={40}
-                  width={40}
-                  color="#7F56D9"
-                  radius="6"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                  visible={true}
-                  ariaLabel="rings-loading"
-                />
-              ) : (
-                <p className="text-base-100">{props.buttonText ?? "Done"}</p>
-              )}
+              <p className="text-base-100">{props.buttonText ?? "Done"}</p>
             </button>
           </div>
         </div>

@@ -6,7 +6,7 @@ const NavigationBar = () => {
     >
       <div className="navbar-start">
         <img src="/logo-vfx.png" height="60" width="60" />
-        <p className="text-3xl font-medium">Verifax</p>
+        <p className="text-3xl font-medium">Orient</p>
       </div>
     </div>
   );
