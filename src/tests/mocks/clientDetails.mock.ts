@@ -12,11 +12,11 @@ import { SocialMediaDetailsFormData } from "../../features/onboarding-workflow/v
 
 export const mockClient: Client = {
   id: 1,
-  name: 'John Doe',
-  primaryEmail: 'john.doe@example.com',
-  firstName: 'John',
-  lastName: 'Doe',
-  phone: '123-456-7890',
+  name: "John Doe",
+  primaryEmail: "john.doe@example.com",
+  firstName: "John",
+  lastName: "Doe",
+  phone: "123-456-7890",
   createdAt: new Date(),
   updatedAt: new Date(),
   isActive: true,
@@ -44,6 +44,7 @@ export const mockClientDetails: ClientDetails = {
   targetLocations: "Mock target location",
   topCompetitors: "Mock top competitor",
   link_id: "mock-link-id",
+  additionalInfo: "Mock additional comments",
 };
 
 export const mockOnboardingLinkRequest: OnboardingLinkRequest = {
@@ -92,7 +93,7 @@ export const mockContentSpecsInitialValues: ContentSpecsFormData = {
   revenue: 100000,
   brandGuidelines: "Mock brand guidelines",
   communicationPref: "Mock communication preference",
-  additionalComments: "Mock additional comments",
+  additionalInfo: "Mock additional comments",
   hasUploadedFiles: false,
 };
 
