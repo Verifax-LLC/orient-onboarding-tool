@@ -196,9 +196,9 @@ const ContentSpecsView: React.FC<ContentSpecsViewProps> = (
               </>
             )}
             <VInput
-              label="Additional comments"
+              label="Additional info"
               type="text"
-              name="additionalComments"
+              name="additionalInfo"
               placeholder="Any additional comments..."
               value={values.additionalInfo}
               onChange={handleChange}

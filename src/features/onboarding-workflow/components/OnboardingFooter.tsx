@@ -15,7 +15,7 @@ const OnboardingFooter: React.FC<OnboardingFooterProps> = (
 ) => {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-secondary">Powered by Verifax</p>
+      <p className="text-secondary">Powered by Orient</p>
       <div className="w-[343px] m-auto">
         <VButton
           type={props.type ?? "button"}
